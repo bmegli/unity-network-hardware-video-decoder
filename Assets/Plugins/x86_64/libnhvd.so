@@ -1,0 +1,2 @@
+Stub so that Unity doesn't delete the configuration for native library.
+You have to copy real library over it!

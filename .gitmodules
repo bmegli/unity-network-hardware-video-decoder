@@ -1,0 +1,3 @@
+[submodule "PluginsSource/network-hardware-video-decoder"]
+	path = PluginsSource/network-hardware-video-decoder
+	url = https://github.com/bmegli/network-hardware-video-decoder.git
