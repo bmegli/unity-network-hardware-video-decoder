@@ -15,7 +15,10 @@ public class RawImageVideoRenderer : MonoBehaviour
 		nhvd=NHVD.nhvd_init (ref net_config, ref hw_config);
 
 		if (nhvd == IntPtr.Zero)
+		{
 			Debug.Log ("failed to initialize NHVD");
+			gameObject.SetActive (false);
+		}
 
 		AdaptTexture (640, 360, TextureFormat.BGRA32);
 
@@ -35,7 +38,7 @@ public class RawImageVideoRenderer : MonoBehaviour
 	}
 		
 	// Update is called once per frame
-	void Update ()
+	void LateUpdate ()
 	{
 		int w=0, h=0, s=0;
 		//	IntPtr data = GetImageDataBegin (ref w, ref h, ref s);
