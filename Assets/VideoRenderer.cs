@@ -3,13 +3,17 @@ using UnityEngine;
 
 public class VideoRenderer : MonoBehaviour
 {
+	public string device = "/dev/dri/renderD128";
+	public string ip = "";
+	public ushort port = 9767;
+
 	private IntPtr nhvd;
 	private Texture2D videoTexture = null;
 
 	void Awake()
 	{
-		NHVD.nhvd_hw_config hw_config = new NHVD.nhvd_hw_config{hardware="vaapi", codec="h264", device="/dev/dri/renderD128", pixel_format="bgr0"};
-		NHVD.nhvd_net_config net_config = new NHVD.nhvd_net_config{ip="", port=9767, timeout_ms=500 };
+		NHVD.nhvd_hw_config hw_config = new NHVD.nhvd_hw_config{hardware="vaapi", codec="h264", device=this.device, pixel_format="bgr0"};
+		NHVD.nhvd_net_config net_config = new NHVD.nhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
 
 		nhvd=NHVD.nhvd_init (ref net_config, ref hw_config);
 
@@ -42,7 +46,7 @@ public class VideoRenderer : MonoBehaviour
 		}
 	}
 
-	// Update is called once per frame
+	// LateUpdate is called once per frame just before rendering
 	void LateUpdate ()
 	{
 		int w=0, h=0, s=0;
