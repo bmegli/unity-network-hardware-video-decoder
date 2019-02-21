@@ -134,6 +134,9 @@ Since you are linking to FFmpeg libraries consider also `avcodec` and `avutil` l
 	- hardware video decoding
 	- serving lastest video frame through easy interface
 - Unity side:
-	- in LateUpdate gets pointer to latest video frame
-	- fills the texture with video data
+	- `NHVD` script is a wrapper around native library
+	- `RawImageVideoRenderer` script may be used for streaming to UI
+	- `VideoRenderer` script may be used for streaming to scene object 
+	- in `LateUpdate` script gets pointer to latest video frame
+	- and fills the texture with video data
 
