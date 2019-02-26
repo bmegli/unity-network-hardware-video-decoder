@@ -277,6 +277,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eddd23561246c49debbd0c2e4ad8fa63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  device: /dev/dri/renderD128
+  ip: 
+  port: 9766
 --- !u!1 &232426158
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,6 +539,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12effc58cbb744b51ba7e080578fcc88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  device: /dev/dri/renderD128
+  ip: 
+  port: 9767
 --- !u!1 &1469442498
 GameObject:
   m_ObjectHideFlags: 0
