@@ -20,11 +20,13 @@ public class RawImageVideoRenderer : MonoBehaviour
 	public ushort port = 9766;
 
 	private IntPtr nhvd;
-	private Texture2D videoTexture = null;
+	private NHVD.nhvd_frame frame = new NHVD.nhvd_frame{ data=new System.IntPtr[8], linesize=new int[8] };
+	private Texture2D Y, U, V;
+
 
 	void Awake()
 	{
-		NHVD.nhvd_hw_config hw_config = new NHVD.nhvd_hw_config{hardware="vaapi", codec="h264", device=this.device, pixel_format="bgr0"};
+		NHVD.nhvd_hw_config hw_config = new NHVD.nhvd_hw_config{hardware="vaapi", codec="h264", device=this.device, pixel_format="yuv420p"};
 		NHVD.nhvd_net_config net_config = new NHVD.nhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
 
 		nhvd=NHVD.nhvd_init (ref net_config, ref hw_config);
@@ -34,38 +36,40 @@ public class RawImageVideoRenderer : MonoBehaviour
 			Debug.Log ("failed to initialize NHVD");
 			gameObject.SetActive (false);
 		}
-
-		AdaptTexture (640, 360, TextureFormat.BGRA32);
-
+			
 	}
 	void OnDestroy()
 	{
 		NHVD.nhvd_close (nhvd);
 	}
 
-	private void AdaptTexture(int width, int height, TextureFormat format)
+	private void AdaptTexture()
 	{
-		if (videoTexture == null || width != videoTexture.width || height != videoTexture.height || format != videoTexture.format)
+		if(Y== null || Y.width != frame.width || Y.height != frame.height)
 		{
-			videoTexture = new Texture2D (width, height, format, false);
-			GetComponent<RawImage> ().texture = videoTexture;
+			Y = new Texture2D (frame.width, frame.height, TextureFormat.R8, false);
+			U = new Texture2D (frame.width/2, frame.height/2, TextureFormat.R8, false);
+			V = new Texture2D (frame.width/2, frame.height/2, TextureFormat.R8, false);
+			GetComponent<RawImage> ().texture = Y;
+			GetComponent<RawImage> ().material.SetTexture ("_U", U);
+			GetComponent<RawImage> ().material.SetTexture ("_V", V);
 		}
 	}
 		
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		int w=0, h=0, s=0;
-		//	IntPtr data = GetImageDataBegin (ref w, ref h, ref s);
-		IntPtr data = NHVD.nhvd_get_frame_begin(nhvd, ref w, ref h, ref s);
-
-		if (data != IntPtr.Zero)
+		if (NHVD.nhvd_get_frame_begin(nhvd, ref frame) == 0)
 		{
-			AdaptTexture (w, h, TextureFormat.BGRA32);
-			videoTexture.LoadRawTextureData (data, w * h * 4);
-			videoTexture.Apply (false);
-		} 
-
+			AdaptTexture ();
+			Y.LoadRawTextureData (frame.data[0], frame.width*frame.height);
+			Y.Apply (false);
+			U.LoadRawTextureData (frame.data [1], frame.width * frame.height / 4);
+			U.Apply (false);
+			V.LoadRawTextureData (frame.data [2], frame.width * frame.height / 4);
+			V.Apply (false);	
+		}
+			
 		if (NHVD.nhvd_get_frame_end (nhvd) != 0)
 			Debug.LogWarning ("Failed to get NHVD frame data");
 	}
