@@ -12,6 +12,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI; //RawImage
+using UnityEngine.Rendering; //CommandBuffer
 
 public class RawImageVideoRenderer : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class RawImageVideoRenderer : MonoBehaviour
 	private IntPtr nhvd;
 	private NHVD.nhvd_frame frame = new NHVD.nhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] };
 	private Texture2D videoTexture;
+	private CommandBuffer commandBuffer;
 
 	void Awake()
 	{
@@ -35,6 +37,11 @@ public class RawImageVideoRenderer : MonoBehaviour
 			Debug.Log ("failed to initialize NHVD");
 			gameObject.SetActive (false);
 		}
+
+		commandBuffer = new CommandBuffer();
+
+		videoTexture = new Texture2D (640, 360, TextureFormat.BGRA32, false);
+		GetComponent<RawImage> ().texture = videoTexture;
 			
 	}
 	void OnDestroy()
@@ -42,26 +49,10 @@ public class RawImageVideoRenderer : MonoBehaviour
 		NHVD.nhvd_close (nhvd);
 	}
 
-	private void AdaptTexture()
-	{
-		if(videoTexture== null || videoTexture.width != frame.width || videoTexture.height != frame.height)
-		{
-			videoTexture = new Texture2D (frame.width, frame.height, TextureFormat.BGRA32, false);
-			GetComponent<RawImage> ().texture = videoTexture;
-		}
-	}
-				
-	// Update is called once per frame
-	void LateUpdate ()
-	{
-		if (NHVD.nhvd_get_frame_begin(nhvd, ref frame) == 0)
-		{
-			AdaptTexture ();
-			videoTexture.LoadRawTextureData (frame.data[0], frame.width*frame.height*4);
-			videoTexture.Apply (false);
-		}
-
-		if (NHVD.nhvd_get_frame_end (nhvd) != 0)
-			Debug.LogWarning ("Failed to get NHVD frame data");
-	}
+	 void Update()
+    {
+        commandBuffer.IssuePluginCustomTextureUpdateV2( NHVD.GetUnityTextureUpdateCallback(), videoTexture, 0);
+        Graphics.ExecuteCommandBuffer(commandBuffer);
+        commandBuffer.Clear();
+ 	}
 }

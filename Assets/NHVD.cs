@@ -93,4 +93,13 @@ public class NHVD
 	[DllImport ("nhvd")]
 	#endif
 	public static extern int nhvd_get_frame_end(System.IntPtr n) ;
+
+	/// Return Type: void
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("nhvd")]
+	#endif
+	public static extern System.IntPtr GetUnityTextureUpdateCallback();
+
 }
