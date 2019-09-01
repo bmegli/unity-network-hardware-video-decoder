@@ -2,13 +2,15 @@
 
 Unity video streaming over custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol with hardware decoding.
 
-See also [NHVE](https://github.com/bmegli/network-hardware-video-encoder) and [RNHVE](https://github.com/bmegli/realsense-network-hardware-video-encoder) as video sources.
-
 There are two examples:
 - streaming to UI element (RawImage)
 - streaming to scene element (anything with texture)
 
 This project contains native library plugin.
+
+See also [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects and video sources:
+- [NHVE](https://github.com/bmegli/network-hardware-video-encoder) (currently Unix-like platforms only)
+- [RNHVE](https://github.com/bmegli/realsense-network-hardware-video-encoder) (currently Unix-like platforms only)
 
 ## Platforms 
 
