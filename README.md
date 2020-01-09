@@ -109,7 +109,7 @@ If you have Realsense camera you may use [realsense-network-hardware-video-encod
 ```bash
 # assuming you build RNHVE, port is 9766, VAAPI device is /dev/dri/renderD128
 # in RNHVE build directory
-./realsense-nhve 127.0.0.1 9766 color 640 360 30 10 /dev/dri/renderD128
+./realsense-nhve-h264 127.0.0.1 9766 color 640 360 30 10 /dev/dri/renderD128
 ```
 
 If everything went well you will see 10 seconds video streamed from Realsense camera.
