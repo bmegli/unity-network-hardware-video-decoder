@@ -1,7 +1,7 @@
 ﻿/*
  * Unity Network Hardware Video Decoder
  * 
- * Copyright 2019 (C) Bartosz Meglicki <meglickib@gmail.com>
+ * Copyright 2019-2020 (C) Bartosz Meglicki <meglickib@gmail.com>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -29,6 +29,10 @@ public class NHVD
 
 		[System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)]
 		public string pixel_format;
+
+		public int width;
+		public int height;
+		public int profile;
 	}
 
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]

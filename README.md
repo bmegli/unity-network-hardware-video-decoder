@@ -92,6 +92,15 @@ parameters you need to setup your hardware. Assuming you are using VAAPI device:
 
 Alternatively configure `VideoQuad` `VideoRenderer` componenent (scene, not UI streaming).
 
+For troubleshooting you may use:
+
+```bash
+# in the PluginsSource/network-hardware-video-decoder/build
+./nhvd-receive-example
+```
+
+This program prints diagnostic information that you would not see from Unity.
+
 ### Sending side
 
 For a quick test you may use [NHVE](https://github.com/bmegli/network-hardware-video-encoder) procedurally generated H.264 video (recommended).
