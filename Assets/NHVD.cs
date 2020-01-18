@@ -60,6 +60,14 @@ public class NHVD
 		public int[] linesize;
 	}
 
+	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+	public struct nhvd_point_cloud
+	{
+		public System.IntPtr data;
+		public int size;
+		public int used;
+	}
+
 	/// Return Type: nhvd*
 	///net_config: nhvd_net_config*
 	///hw_config: nhvd_hw_config*
@@ -97,4 +105,23 @@ public class NHVD
 	[DllImport ("nhvd")]
 	#endif
 	public static extern int nhvd_get_frame_end(System.IntPtr n) ;
+
+	/// Return Type: int
+	///n: void*
+	///pc: nhvd_point_cloud*
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("nhvd")]
+	#endif
+	public static extern int nhvd_get_point_cloud_begin(System.IntPtr n, ref nhvd_point_cloud pc);
+
+	/// Return Type: int
+	///n: nhvd *
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("nhvd")]
+	#endif
+	public static extern int nhvd_get_point_cloud_end(System.IntPtr n) ;
 }
