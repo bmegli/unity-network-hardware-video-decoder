@@ -16,6 +16,15 @@ using System.Runtime.InteropServices;
 public class NHVD
 {
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+	public struct nhvd_net_config
+	{
+		[System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)]
+		public string ip;
+		public ushort port;
+		public int timeout_ms;
+	}
+
+	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
 	public struct nhvd_hw_config
 	{
 		[System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)]
@@ -36,12 +45,13 @@ public class NHVD
 	}
 
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-	public struct nhvd_net_config
-	{
-		[System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)]
-		public string ip;
-		public ushort port;
-		public int timeout_ms;
+	public struct nhvd_depth_config
+	{	
+		public float ppx;
+		public float ppy;
+		public float fx;    
+		public float fy;
+		public float depth_unit;
 	}
 
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -71,12 +81,29 @@ public class NHVD
 	/// Return Type: nhvd*
 	///net_config: nhvd_net_config*
 	///hw_config: nhvd_hw_config*
+	///depth_config: nhvd_depth_config*
 	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
 	[DllImport ("__Internal")]
 	#else
 	[DllImport ("nhvd")]
 	#endif
-	public static extern System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config) ;
+	public static extern System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config, ref nhvd_depth_config depth_config) ;
+
+	///Return Type: nhvd*
+	///net_config: nhvd_net_config*
+	///hw_config: nhvd_hw_config*
+	///depth_config: nhvd_depth_config*
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("nhvd")]
+	#endif
+	private static extern System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config, System.	IntPtr depth_config) ;
+
+	public static System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config) 
+	{
+		return nhvd_init(ref net_config, ref hw_config, System.IntPtr.Zero);
+	}
 
 	/// Return Type: void
 	///n: nhvd *
@@ -86,6 +113,26 @@ public class NHVD
 	[DllImport ("nhvd")]
 	#endif
 	public static extern void nhvd_close(System.IntPtr n) ;
+
+	/// Return Type: int
+	///n: nhvd*
+	///frame: nhvd_frame*
+	///pc: nhvd_point_cloud*
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("nhvd")]
+	#endif
+	public static extern  int nhvd_get_begin(System.IntPtr n, ref nhvd_frame frame, ref nhvd_point_cloud pc) ;
+
+	/// Return Type: int
+	///n: nhvd *
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("nhvd")]
+	#endif
+	public static extern int nhvd_get_end(System.IntPtr n) ;
 
 	/// Return Type: int
 	///n: void*

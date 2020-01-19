@@ -4,9 +4,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Ev3devMapping
-{
-
 public class MouseRts : MonoBehaviour
 {
 	public int LevelArea = 100;
@@ -28,7 +25,10 @@ public class MouseRts : MonoBehaviour
 	public float TouchRotationMinMagSquared = 1f; 
 	public float TouchRotationMinAngle = 0.1f;
 
+	#if UNITY_STANDALONE
+	#else
     private bool touchRotating = false;
+	#endif
     private Vector2 touchRotationStart = Vector2.zero;
 
 	public float UpDownScale = 0.03f;
@@ -38,8 +38,6 @@ public class MouseRts : MonoBehaviour
 	public float TouchUpDownScale = 0.15f;
 	public float TouchRotateScale = 0.015f;
 	public float TouchMoveScale = 1f;
-
-
 	private float yrotation;
 
 	public void Start()
@@ -189,5 +187,3 @@ public class MouseRts : MonoBehaviour
 		return move;
 	}
 }
-
-} //namespace

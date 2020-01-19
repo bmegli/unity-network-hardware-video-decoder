@@ -1,10 +1,11 @@
 # unity-network-hardware-video-decoder
 
-Unity video streaming over custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol with hardware decoding.
+Unity video/point cloud streaming over custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol with hardware decoding.
 
-There are two examples:
+There are three examples:
 - streaming to UI element (RawImage)
 - streaming to scene element (anything with texture)
+- streaming point clouds (PointCloudRenderer)
 
 This project contains native library plugin.
 
@@ -32,6 +33,8 @@ Also implemented (but not tested):
 - DirectX 11 Video Acceleration (d3d11va)
 - VideoToolbox
 
+Point cloud (HEVC Main10) decoding requires at least Apollo Lake (Kaby Lake for encoding).
+
 Hardware dependencies are introduced through [HVD](https://github.com/bmegli/hardware-video-decoder) library.
 
 ## Dependencies
@@ -41,6 +44,7 @@ Library depends on:
 	- [HVD Hardware Video Decoder](https://github.com/bmegli/hardware-video-decoder)
 		- FFmpeg `avcodec` and `avutil` (at least 3.4 version)
 	- [MLSP Minimal Latency Streaming Protocol](https://github.com/bmegli/minimal-latency-streaming-protocol)
+   - [HDU Hardware Depth Unprojector](https://github.com/bmegli/hardware-depth-unprojector)
 
 NHVD and its dependencies are included as submodules so you only need to satifisy HVD dependencies.
 
@@ -90,16 +94,19 @@ parameters you need to setup your hardware. Assuming you are using VAAPI device:
 	- `Device`
 	- note the `Port`
 
-Alternatively configure `VideoQuad` `VideoRenderer` componenent (scene, not UI streaming).
+Alternatively configure:
+- `VideoQuad` `VideoRenderer` componenent (scene, not UI streaming).
+- `PointCloud` `PointCloudRenderer` component (point cloud streaming)
 
 For troubleshooting you may use:
 
 ```bash
 # in the PluginsSource/network-hardware-video-decoder/build
-./nhvd-receive-example
+./nhvd-frame-example
+./nhvd-cloud-example
 ```
 
-This program prints diagnostic information that you would not see from Unity.
+Those programs print diagnostic information that you would not see from Unity.
 
 ### Sending side
 
@@ -123,6 +130,14 @@ If you have Realsense camera you may use [realsense-network-hardware-video-encod
 
 If everything went well you will see 10 seconds video streamed from Realsense camera.
 
+For point cloud streaming.
+
+```bash
+# assuming you build RNHVE, port is 9768, VAAPI device is /dev/dri/renderD128
+# in RNHVE build directory
+./realsense-nhve-hevc 127.0.0.1 9768 depth 848 480 30 50 /dev/dri/renderD128
+```
+
 ## License
 
 Code in this repository and my dependencies are licensed under Mozilla Public License, v. 2.0
@@ -143,11 +158,12 @@ Since you are linking to FFmpeg libraries consider also `avcodec` and `avutil` l
 - native plugin (NHVD) is responsible for:
 	- receiving video data on UDP port
 	- hardware video decoding
-	- serving lastest video frame through easy interface
+   - optionally unprojecting depth map to point cloud
+	- serving lastest video frame/point cloud through easy interface
 - Unity side:
 	- `NHVD` script is a wrapper around native library
 	- `RawImageVideoRenderer` script may be used for streaming to UI
-	- `VideoRenderer` script may be used for streaming to scene object 
-	- in `LateUpdate` script gets pointer to latest video frame
-	- and fills the texture with video data
-
+	- `VideoRenderer` script may be used for streaming to scene object
+   - `PointCloudRenderer` script may be used for streaming point clouds
+	- in `LateUpdate` script gets pointer to latest video frame/vertices buffer
+	- and fills the texture/mesh with the data
