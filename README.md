@@ -10,16 +10,13 @@ There are three examples:
 This project contains native library plugin.
 
 See also [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects.\
-Video sources:
-- [NHVE](https://github.com/bmegli/network-hardware-video-encoder) (currently Unix-like platforms only)
-- [RNHVE](https://github.com/bmegli/realsense-network-hardware-video-encoder) (currently Unix-like platforms only)
 
 ## Video sources
 
 Currently Unix-like platforms only.
 
-- [NHVE](https://github.com/bmegli/network-hardware-video-encoder) (dummy, procedurally generated video).
-- [RNHVE](https://github.com/bmegli/realsense-network-hardware-video-encoder) (Realsense camera streaming).
+- [NHVE](https://github.com/bmegli/network-hardware-video-encoder) (dummy, procedurally generated video)
+- [RNHVE](https://github.com/bmegli/realsense-network-hardware-video-encoder) (Realsense camera streaming)
 
 ## Platforms 
 
