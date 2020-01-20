@@ -1,10 +1,10 @@
 # unity-network-hardware-video-decoder
 
-Unity video/point cloud streaming over custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol with hardware decoding.
+Unity video and point cloud streaming over custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol with hardware decoding.
 
 There are three examples:
-- streaming to UI element (RawImage)
-- streaming to scene element (anything with texture)
+- streaming video to UI element (RawImage)
+- streaming video to scene element (anything with texture)
 - streaming point clouds (PointCloudRenderer)
 
 This project contains native library plugin.
@@ -13,40 +13,37 @@ See also [hardware-video-streaming](https://github.com/bmegli/hardware-video-str
 - [NHVE](https://github.com/bmegli/network-hardware-video-encoder) (currently Unix-like platforms only)
 - [RNHVE](https://github.com/bmegli/realsense-network-hardware-video-encoder) (currently Unix-like platforms only)
 
+The project was origianlly written for Realsense camera (video, infrared and depth streaming).
+
 ## Platforms 
 
-Unix-like operating systems (e.g. Linux).
-
-The dependency is through [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) socket use (easily portable).
+Unix-like operating systems (e.g. Linux), [more info](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Platforms)
 
 Tested on Ubuntu 18.04.
 
 ## Hardware
 
-Tested with:
-- Intel VAAPI compatible hardware decoders ([Quick Sync Video](https://ark.intel.com/Search/FeatureFilter?productType=processors&QuickSyncVideo=true))
+Tested on Intel Kaby Lake.
 
-Also implemented (but not tested):
-- AMD/ATI VAAPI compatible hardware decoders
-- VDPAU compatible hardware decoders (e.g. Nvidia GPU) 
-- DirectX 9 Video Acceleration (dxva2)
-- DirectX 11 Video Acceleration (d3d11va)
-- VideoToolbox
+### Video
 
-Point cloud (HEVC Main10) decoding requires at least Apollo Lake (Kaby Lake for encoding).
+Intel VAAPI compatible hardware decoders (Quick Sync Video).
 
-Hardware dependencies are introduced through [HVD](https://github.com/bmegli/hardware-video-decoder) library.
+It is likely that H.264 through VAAPI will work also on AMD and NVIDIA.
+
+[Other technologies](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Hardware) may also be supported but were not tested.
+
+
+### Depth/point clouds
+
+Intel VAAPI HEVC Main10 compatible hardware decoders, at least Apollo Lake.
+
+[Other technologies](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Hardware) may also be supported but were not tested.
+
 
 ## Dependencies
 
-Library depends on:
-- [NHVD Network Hardware Video Decoder](https://github.com/bmegli/network-hardware-video-decoder)
-	- [HVD Hardware Video Decoder](https://github.com/bmegli/hardware-video-decoder)
-		- FFmpeg `avcodec` and `avutil` (at least 3.4 version)
-	- [MLSP Minimal Latency Streaming Protocol](https://github.com/bmegli/minimal-latency-streaming-protocol)
-   - [HDU Hardware Depth Unprojector](https://github.com/bmegli/hardware-depth-unprojector)
-
-NHVD and its dependencies are included as submodules so you only need to satifisy HVD dependencies.
+All dependencies apart from FFmpeg are included as submodules, [more info](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Dependencies).
 
 Works with system FFmpeg on Ubuntu 18.04 and doesn't on 16.04 (outdated FFmpeg).
 
