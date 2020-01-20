@@ -9,15 +9,21 @@ There are three examples:
 
 This project contains native library plugin.
 
-See also [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects and video sources:
+See also [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects.\
+Video sources:
 - [NHVE](https://github.com/bmegli/network-hardware-video-encoder) (currently Unix-like platforms only)
 - [RNHVE](https://github.com/bmegli/realsense-network-hardware-video-encoder) (currently Unix-like platforms only)
 
-The project was origianlly written for Realsense camera (video, infrared and depth streaming).
+## Video sources
+
+Currently Unix-like platforms only.
+
+- [NHVE](https://github.com/bmegli/network-hardware-video-encoder) (dummy, procedurally generated video).
+- [RNHVE](https://github.com/bmegli/realsense-network-hardware-video-encoder) (Realsense camera streaming).
 
 ## Platforms 
 
-Unix-like operating systems (e.g. Linux), [more info](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Platforms)
+Unix-like operating systems (e.g. Linux), [more info](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Platforms).
 
 Tested on Ubuntu 18.04.
 
@@ -31,15 +37,14 @@ Intel VAAPI compatible hardware decoders (Quick Sync Video).
 
 It is likely that H.264 through VAAPI will work also on AMD and NVIDIA.
 
-[Other technologies](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Hardware) may also be supported but were not tested.
+[Other technologies](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Hardware) may also work but were not tested.
 
 
 ### Depth/point clouds
 
-Intel VAAPI HEVC Main10 compatible hardware decoders, at least Apollo Lake.
+Intel VAAPI HEVC Main10 compatible hardware decoders, at least Intel Apollo Lake.
 
-[Other technologies](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Hardware) may also be supported but were not tested.
-
+[Other technologies](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Hardware) may also work but were not tested.
 
 ## Dependencies
 
@@ -80,8 +85,7 @@ cp libnhvd.so ../../../Assets/Plugins/x86_64/libnhvd.so
 
 ## Testing
 
-It's easiest to check first with [HVD](https://github.com/bmegli/hardware-video-decoder) what 
-parameters you need to setup your hardware. Assuming you are using VAAPI device:
+Assuming you are using VAAPI device.
 
 ### Receiving (Unity) side
 
@@ -91,19 +95,14 @@ parameters you need to setup your hardware. Assuming you are using VAAPI device:
 	- `Device`
 	- note the `Port`
 
-Alternatively configure:
-- `VideoQuad` `VideoRenderer` componenent (scene, not UI streaming).
-- `PointCloud` `PointCloudRenderer` component (point cloud streaming)
-
 For troubleshooting you may use:
 
 ```bash
 # in the PluginsSource/network-hardware-video-decoder/build
 ./nhvd-frame-example
-./nhvd-cloud-example
 ```
 
-Those programs print diagnostic information that you would not see from Unity.
+This program prints diagnostic information that you would not see from Unity.
 
 ### Sending side
 
@@ -127,12 +126,30 @@ If you have Realsense camera you may use [realsense-network-hardware-video-encod
 
 If everything went well you will see 10 seconds video streamed from Realsense camera.
 
-For point cloud streaming.
+
+### Streaming to scene (not UI)
+
+Configure as above:
+- `VideoQuad` `VideoRenderer` componenent
+
+### Point cloud streaming
+
+Configure as above:
+- `PointCloud` `PointCloudRenderer` component
+
+If you have Realsense camera you may use [realsense-network-hardware-video-encoder](https://github.com/bmegli/realsense-network-hardware-video-encoder).
 
 ```bash
 # assuming you build RNHVE, port is 9768, VAAPI device is /dev/dri/renderD128
 # in RNHVE build directory
 ./realsense-nhve-hevc 127.0.0.1 9768 depth 848 480 30 50 /dev/dri/renderD128
+```
+
+For troubleshooting you may use:
+
+```bash
+# in the PluginsSource/network-hardware-video-decoder/build
+./nhvd-cloud-example
 ```
 
 ## License
