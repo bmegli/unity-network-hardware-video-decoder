@@ -9,7 +9,7 @@ There are three examples:
 
 This project contains native library plugin.
 
-See also [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects.\
+See also [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects.
 
 ## Video sources
 
@@ -131,6 +131,8 @@ Configure as above:
 
 ### Point cloud streaming
 
+Assuming Realsense D435 camera with 848x480.
+
 Configure as above:
 - `PointCloud` `PointCloudRenderer` component
 
@@ -149,6 +151,9 @@ For troubleshooting you may use:
 ./nhvd-cloud-example
 ```
 
+If you are using different Realsense device/resolution you will have to configure camera intrinsics in:
+- `PointCloud` `PointCloudRenderer` source
+
 ## License
 
 Code in this repository and my dependencies are licensed under Mozilla Public License, v. 2.0
@@ -164,17 +169,6 @@ Since you are linking to FFmpeg libraries consider also `avcodec` and `avutil` l
 
 ## Additional information
 
-### Understanding this project
+For understanding this project see [explanation on wiki](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/How-it-works)
 
-- native plugin (NHVD) is responsible for:
-	- receiving video data on UDP port
-	- hardware video decoding
-   - optionally unprojecting depth map to point cloud
-	- serving lastest video frame/point cloud through easy interface
-- Unity side:
-	- `NHVD` script is a wrapper around native library
-	- `RawImageVideoRenderer` script may be used for streaming to UI
-	- `VideoRenderer` script may be used for streaming to scene object
-   - `PointCloudRenderer` script may be used for streaming point clouds
-	- in `LateUpdate` script gets pointer to latest video frame/vertices buffer
-	- and fills the texture/mesh with the data
+For PointCloud streaming design decisions see [issue #5](https://github.com/bmegli/unity-network-hardware-video-decoder/issues/5)
