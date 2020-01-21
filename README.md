@@ -1,6 +1,6 @@
 # unity-network-hardware-video-decoder
 
-Video and point cloud streaming example with hardware decoding over custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol:
+Example of video and point cloud streaming with hardware decoding and custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol:
 
 - streaming video to UI element (RawImage)
 - streaming video to scene element (anything with texture)
