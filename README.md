@@ -2,7 +2,6 @@
 
 Video and point cloud streaming example with hardware decoding over custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol.
 
-Includes:
 - streaming video to UI element (RawImage)
 - streaming video to scene element (anything with texture)
 - streaming point clouds (Mesh)
