@@ -1,15 +1,16 @@
 # unity-network-hardware-video-decoder
 
-Unity video and point cloud streaming over custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol with hardware decoding.
+Video and point cloud streaming example with hardware decoding over custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol.
 
-There are three examples:
+Includes:
 - streaming video to UI element (RawImage)
 - streaming video to scene element (anything with texture)
-- streaming point clouds (PointCloudRenderer)
+- streaming point clouds (Mesh)
 
 This project contains native library plugin.
 
-See also [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects.
+See [how-it-works](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/How-it-works) on wiki to understand the project.
+See [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects.
 
 ## Video sources
 
@@ -167,8 +168,3 @@ Making a github fork with your changes satisfies those requirements perfectly.
 
 Since you are linking to FFmpeg libraries consider also `avcodec` and `avutil` licensing.
 
-## Additional information
-
-For understanding this project see [explanation on wiki](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/How-it-works)
-
-For PointCloud streaming design decisions see [issue #5](https://github.com/bmegli/unity-network-hardware-video-decoder/issues/5)
