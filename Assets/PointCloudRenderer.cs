@@ -83,7 +83,7 @@ public class PointCloudRenderer : MonoBehaviour
 				NativeArray<Vector3> pc = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<Vector3>(point_cloud.data.ToPointer(), point_cloud.size, Allocator.None);
 				#if ENABLE_UNITY_COLLECTIONS_CHECKS
 				NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref pc, AtomicSafetyHandle.Create());
-				#endifs
+				#endif
 				mesh.SetVertices(pc, 0, point_cloud.size);
 			}
 		}
