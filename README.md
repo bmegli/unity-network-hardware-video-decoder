@@ -12,6 +12,10 @@ See [how-it-works](https://github.com/bmegli/unity-network-hardware-video-decode
 
 See [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects.
 
+See point cloud streaming video to understand this feature:
+
+[![Hardware Accelerated Point Cloud Streaming](http://img.youtube.com/vi/qnTxhfNW-_4/0.jpg)](http://www.youtube.com/watch?v=qnTxhfNW-_4)
+
 ## Video sources
 
 Currently Unix-like platforms only.
