@@ -74,6 +74,7 @@ public class NHVD
 	public struct nhvd_point_cloud
 	{
 		public System.IntPtr data;
+		public System.IntPtr colors;
 		public int size;
 		public int used;
 	}

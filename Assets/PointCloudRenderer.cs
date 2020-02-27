@@ -31,7 +31,7 @@ public class PointCloudRenderer : MonoBehaviour
 	{
 		NHVD.nhvd_net_config net_config = new NHVD.nhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
 		NHVD.nhvd_hw_config hw_config = new NHVD.nhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="p010le", width=848, height=480, profile=2};
-		NHVD.nhvd_depth_config depth_config = new NHVD.nhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f };
+		NHVD.nhvd_depth_config depth_config = new NHVD.nhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f };
 
 		nhvd=NHVD.nhvd_init (ref net_config, ref hw_config, ref depth_config);
 
@@ -68,6 +68,13 @@ public class PointCloudRenderer : MonoBehaviour
 		//we don't want to recalculate bounds for half million dynamic points so just set wide bounds
 		mesh.bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
 
+
+		Color32[] colors = new Color32[size];
+		for(int i=0;i<size;++i)
+			colors[i] = new Color32(255, 0, 0, 255);
+
+		mesh.SetColors(colors);
+
 		GetComponent<MeshFilter>().mesh = mesh;
 	}
 
@@ -81,10 +88,13 @@ public class PointCloudRenderer : MonoBehaviour
 			unsafe
 			{
 				NativeArray<Vector3> pc = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<Vector3>(point_cloud.data.ToPointer(), point_cloud.size, Allocator.None);
+				NativeArray<Color32> colors = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<Color32>(point_cloud.colors.ToPointer(), point_cloud.size, Allocator.None);
 				#if ENABLE_UNITY_COLLECTIONS_CHECKS
 				NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref pc, AtomicSafetyHandle.Create());
+				NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref colors, AtomicSafetyHandle.Create());
 				#endif
 				mesh.SetVertices(pc, 0, point_cloud.size);
+				mesh.SetColors(colors, 0, point_cloud.size);
 			}
 		}
 
