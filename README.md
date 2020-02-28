@@ -108,7 +108,7 @@ This program prints diagnostic information that you would not see from Unity.
 
 ### Sending side
 
-For a quick test you may use [NHVE](https://github.com/bmegli/network-hardware-video-encoder) procedurally generated H.264 video (recommended).
+For a quick test you may use [NHVE](https://github.com/bmegli/network-hardware-video-encoder) procedurally generated H.264 video.
 
 ```bash
 # assuming you build NHVE, port is 9766, VAAPI device is /dev/dri/renderD128
