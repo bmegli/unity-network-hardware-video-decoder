@@ -42,7 +42,7 @@ It is likely that H.264 through VAAPI will work also on AMD and NVIDIA.
 [Other technologies](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Hardware) may also work but were not tested.
 
 
-### Depth/point clouds
+### Depth/point clouds/textured point clouds
 
 Intel VAAPI HEVC Main10 compatible hardware decoders, at least Intel Apollo Lake.
 
@@ -108,7 +108,7 @@ This program prints diagnostic information that you would not see from Unity.
 
 ### Sending side
 
-For a quick test you may use [NHVE](https://github.com/bmegli/network-hardware-video-encoder) procedurally generated H.264 video (recommended).
+For a quick test you may use [NHVE](https://github.com/bmegli/network-hardware-video-encoder) procedurally generated H.264 video.
 
 ```bash
 # assuming you build NHVE, port is 9766, VAAPI device is /dev/dri/renderD128
@@ -147,6 +147,8 @@ If you have Realsense camera you may use [realsense-network-hardware-video-encod
 # assuming you build RNHVE, port is 9768, VAAPI device is /dev/dri/renderD128
 # in RNHVE build directory
 ./realsense-nhve-hevc 127.0.0.1 9768 depth 848 480 30 50 /dev/dri/renderD128
+# or for textured point cloud (only D435)
+./realsense-nhve-hevc 127.0.0.1 9768 depth+ir 848 480 30 50 /dev/dri/renderD128
 ```
 
 For troubleshooting you may use:
@@ -158,6 +160,13 @@ For troubleshooting you may use:
 
 If you are using different Realsense device/resolution you will have to configure camera intrinsics in:
 - `PointCloud` `PointCloudRenderer` source
+
+For good results:
+- tune Realsense resolution and camera intrinsics
+- update Realsense firmware (>= 5.12.1.0 unlocks [more](https://github.com/bmegli/realsense-depth-to-vaapi-hevc10/wiki/How-it-works#depth-units) Depth Units options)
+- tune Realsense Depth Units in RNHVE and UNHVD
+- tune encoding bitrate in RNHVE CLI
+- tune encoding options in RNHVE code (e.g. increase B frames)
 
 ## License
 
