@@ -5,7 +5,6 @@ Example of video and point cloud streaming with hardware decoding and custom [ML
 - streaming video to UI element (RawImage)
 - streaming video to scene element (anything with texture)
 - streaming point clouds (Mesh)
-- streaming textured point clouds (Mesh with colors)
 
 This project contains native library plugin.
 
