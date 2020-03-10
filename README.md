@@ -56,7 +56,7 @@ Intel VAAPI HEVC Main10 compatible hardware decoders, at least Intel Apollo Lake
 
 All dependencies apart from FFmpeg are included as submodules, [more info](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Dependencies).
 
-Works with system FFmpeg on Ubuntu 18.04 and doesn't on 16.04 (outdated FFmpeg).
+Works with system FFmpeg on Ubuntu 18.04 and doesn't on 16.04 (outdated FFmpeg and VAAPI ecosystem).
 
 ## Building Instructions
 
