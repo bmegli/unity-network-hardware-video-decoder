@@ -14,13 +14,11 @@ See [benchmarks](https://github.com/bmegli/unity-network-hardware-video-decoder/
 
 See [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects.
 
-See point cloud streaming video to understand this feature:
+See videos to understand point cloud streaming features:
 
-[![Hardware Accelerated Point Cloud Streaming](http://img.youtube.com/vi/qnTxhfNW-_4/0.jpg)](http://www.youtube.com/watch?v=qnTxhfNW-_4)
-
-See infrared textured point cloud streaming video to understand this feature:
-
-[![Hardware Accelerated Infrared Textured Point Cloud Streaming](http://img.youtube.com/vi/zVIuvWMz5mU/0.jpg)](https://www.youtube.com/watch?v=zVIuvWMz5mU)
+| Point Cloud Streaming | Infrared Textured Point Cloud Streaming |
+|-----------------------|-----------------------------------------|
+| [![Hardware Accelerated Point Cloud Streaming](http://img.youtube.com/vi/qnTxhfNW-_4/0.jpg)](http://www.youtube.com/watch?v=qnTxhfNW-_4) | [![Hardware Accelerated Infrared Textured Point Cloud Streaming](http://img.youtube.com/vi/zVIuvWMz5mU/0.jpg)](https://www.youtube.com/watch?v=zVIuvWMz5mU) |
 
 ## Video sources
 
