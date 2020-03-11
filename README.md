@@ -60,7 +60,8 @@ Works with system FFmpeg on Ubuntu 18.04 and doesn't on 16.04 (outdated FFmpeg a
 
 ## Building Instructions
 
-Tested on Ubuntu 18.04.
+Tested on Ubuntu 18.04.\
+Requires Unity 2019.3  for [technical reasons](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/How-it-works#point-clouds).
 
 ``` bash
 # update package repositories
