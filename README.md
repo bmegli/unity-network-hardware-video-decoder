@@ -10,6 +10,8 @@ This project contains native library plugin.
 
 See [how-it-works](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/How-it-works) on wiki to understand the project.
 
+See [benchmarks](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Benchmarks) on wiki for glass-to-glass latency.
+
 See [hardware-video-streaming](https://github.com/bmegli/hardware-video-streaming) for related projects.
 
 See point cloud streaming video to understand this feature:
