@@ -88,7 +88,7 @@ public class NHVD
 	#else
 	[DllImport ("nhvd")]
 	#endif
-	public static extern System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config, ref nhvd_depth_config depth_config) ;
+	public static extern System.IntPtr nhvd_init(ref nhvd_net_config net_config, [In]nhvd_hw_config[] hw_configs, int hw_size, ref nhvd_depth_config depth_config);
 
 	///Return Type: nhvd*
 	///net_config: nhvd_net_config*
@@ -99,11 +99,11 @@ public class NHVD
 	#else
 	[DllImport ("nhvd")]
 	#endif
-	private static extern System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config, System.	IntPtr depth_config) ;
+	private static extern System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config, int hw_size, System.IntPtr depth_config) ;
 
 	public static System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config) 
 	{
-		return nhvd_init(ref net_config, ref hw_config, System.IntPtr.Zero);
+		return nhvd_init(ref net_config, ref hw_config, 1, System.IntPtr.Zero);
 	}
 
 	/// Return Type: void
