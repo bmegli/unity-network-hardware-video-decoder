@@ -30,12 +30,16 @@ public class PointCloudRenderer : MonoBehaviour
 	void Awake()
 	{
 		NHVD.nhvd_net_config net_config = new NHVD.nhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
-		NHVD.nhvd_hw_config[] hw_config = new NHVD.nhvd_hw_config[]{
+		NHVD.nhvd_hw_config[] hw_config = new NHVD.nhvd_hw_config[]
+		{
 			new NHVD.nhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="p010le", width=848, height=480, profile=2},
 			new NHVD.nhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="rgb0", width=848, height=480, profile=1}
-			};
-		//NHVD.nhvd_depth_config depth_config = new NHVD.nhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f};
-		NHVD.nhvd_depth_config depth_config = new NHVD.nhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f};
+		};
+
+		//For depth units explanation see:
+		//https://github.com/bmegli/realsense-depth-to-vaapi-hevc10/wiki/How-it-works#depth-units
+		NHVD.nhvd_depth_config depth_config = new NHVD.nhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f};
+		//NHVD.nhvd_depth_config depth_config = new NHVD.nhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f};
 
 		nhvd=NHVD.nhvd_init (ref net_config, hw_config, hw_config.Length, ref depth_config);
 
