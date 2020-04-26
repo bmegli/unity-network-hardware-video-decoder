@@ -4,7 +4,7 @@ Example of video and point cloud streaming with hardware decoding and custom [ML
 
 - streaming video to UI element (RawImage)
 - streaming video to scene element (anything with texture)
-- streaming point clouds (Mesh)
+- streaming textured point clouds (Mesh)
 
 This project contains native library plugin.
 
@@ -96,9 +96,10 @@ Assuming you are using VAAPI device.
 
 ### Receiving (Unity) side
 
-- Open the project in Unity
-- Choose `Canvas` -> `CameraView` -> `RawImage`
-- For `RawImageVideoRenderer` component define
+- open the project in Unity
+- choose `Canvas` -> `CameraView` -> `RawImage`
+- make sure it is enabled
+- for `RawImageVideoRenderer` component define
 	- `Device`
 	- note the `Port`
 
@@ -128,16 +129,16 @@ If you have Realsense camera you may use [realsense-network-hardware-video-encod
 ```bash
 # assuming you build RNHVE, port is 9766, VAAPI device is /dev/dri/renderD128
 # in RNHVE build directory
-./realsense-nhve-h264 127.0.0.1 9766 color 640 360 30 10 /dev/dri/renderD128
+./realsense-nhve-h264 127.0.0.1 9766 color 640 360 30 20 /dev/dri/renderD128
 ```
 
-If everything went well you will see 10 seconds video streamed from Realsense camera.
-
+If everything went well you will see 20 seconds video streamed from Realsense camera.
 
 ### Streaming to scene (not UI)
 
 Configure as above:
 - `VideoQuad` `VideoRenderer` componenent
+- make sure it is enabled
 
 ### Point cloud streaming
 
@@ -145,15 +146,16 @@ Assuming Realsense D435 camera with 848x480.
 
 Configure as above:
 - `PointCloud` `PointCloudRenderer` component
+- make sure it is enabled
 
 If you have Realsense camera you may use [realsense-network-hardware-video-encoder](https://github.com/bmegli/realsense-network-hardware-video-encoder).
 
 ```bash
 # assuming you build RNHVE, port is 9768, VAAPI device is /dev/dri/renderD128
 # in RNHVE build directory
-./realsense-nhve-hevc 127.0.0.1 9768 depth 848 480 30 50 /dev/dri/renderD128
+./realsense-nhve-hevc 127.0.0.1 9768 depth 848 480 30 500 /dev/dri/renderD128
 # or for textured point cloud (only D435)
-./realsense-nhve-hevc 127.0.0.1 9768 depth+ir 848 480 30 50 /dev/dri/renderD128
+./realsense-nhve-depth-ir 127.0.0.1 9768 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
 ```
 
 For troubleshooting you may use:
