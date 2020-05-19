@@ -19,27 +19,27 @@ public class RawImageVideoRenderer : MonoBehaviour
 	public string ip = "";
 	public ushort port = 9766;
 
-	private IntPtr nhvd;
-	private NHVD.nhvd_frame frame = new NHVD.nhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] };
+	private IntPtr unhvd;
+	private UNHVD.unhvd_frame frame = new UNHVD.unhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] };
 	private Texture2D videoTexture;
 
 	void Awake()
 	{
-		NHVD.nhvd_hw_config hw_config = new NHVD.nhvd_hw_config{hardware="vaapi", codec="h264", device=this.device, pixel_format="bgr0", width=0, height=0, profile=0};
-		NHVD.nhvd_net_config net_config = new NHVD.nhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
+		UNHVD.unhvd_hw_config hw_config = new UNHVD.unhvd_hw_config{hardware="vaapi", codec="h264", device=this.device, pixel_format="bgr0", width=0, height=0, profile=0};
+		UNHVD.unhvd_net_config net_config = new UNHVD.unhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
 
-		nhvd=NHVD.nhvd_init (ref net_config, ref hw_config);
+		unhvd=UNHVD.unhvd_init (ref net_config, ref hw_config);
 
-		if (nhvd == IntPtr.Zero)
+		if (unhvd == IntPtr.Zero)
 		{
-			Debug.Log ("failed to initialize NHVD");
+			Debug.Log ("failed to initialize UNHVD");
 			gameObject.SetActive (false);
 		}
 			
 	}
 	void OnDestroy()
 	{
-		NHVD.nhvd_close (nhvd);
+		UNHVD.unhvd_close (unhvd);
 	}
 
 	private void AdaptTexture()
@@ -54,14 +54,14 @@ public class RawImageVideoRenderer : MonoBehaviour
 	// Update is called once per frame
 	void LateUpdate ()
 	{
-		if (NHVD.nhvd_get_frame_begin(nhvd, ref frame) == 0)
+		if (UNHVD.unhvd_get_frame_begin(unhvd, ref frame) == 0)
 		{
 			AdaptTexture ();
 			videoTexture.LoadRawTextureData (frame.data[0], frame.width*frame.height*4);
 			videoTexture.Apply (false);
 		}
 
-		if (NHVD.nhvd_get_frame_end (nhvd) != 0)
-			Debug.LogWarning ("Failed to get NHVD frame data");
+		if (UNHVD.unhvd_get_frame_end (unhvd) != 0)
+			Debug.LogWarning ("Failed to get UNHVD frame data");
 	}
 }

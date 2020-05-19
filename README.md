@@ -80,14 +80,14 @@ git clone --recursive https://github.com/bmegli/unity-network-hardware-video-dec
 # build the plugin shared library
 cd unity-network-hardware-video-decoder
 cd PluginsSource
-cd network-hardware-video-decoder
+cd unhvd-native
 mkdir build
 cd build
 cmake ..
 make
 
 # finally copy the native plugin library to Unity project
-cp libnhvd.so ../../../Assets/Plugins/x86_64/libnhvd.so
+cp libnhvd.so ../../../Assets/Plugins/x86_64/libunhvd.so
 ```
 
 ## Testing
@@ -106,8 +106,8 @@ Assuming you are using VAAPI device.
 For troubleshooting you may use:
 
 ```bash
-# in the PluginsSource/network-hardware-video-decoder/build
-./nhvd-frame-example
+# in the PluginsSource/unhvd-native/build
+./unhvd-frame-example
 ```
 
 This program prints diagnostic information that you would not see from Unity.
@@ -161,8 +161,8 @@ If you have Realsense camera you may use [realsense-network-hardware-video-encod
 For troubleshooting you may use:
 
 ```bash
-# in the PluginsSource/network-hardware-video-decoder/build
-./nhvd-cloud-example
+# in the PluginsSource/unhvd-native/build
+./unhvd-cloud-example
 ```
 
 If you are using different Realsense device/resolution you will have to configure camera intrinsics in:

@@ -13,10 +13,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-public class NHVD
+public class UNHVD
 {
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-	public struct nhvd_net_config
+	public struct unhvd_net_config
 	{
 		[System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)]
 		public string ip;
@@ -25,7 +25,7 @@ public class NHVD
 	}
 
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-	public struct nhvd_hw_config
+	public struct unhvd_hw_config
 	{
 		[System.Runtime.InteropServices.MarshalAsAttribute(System.Runtime.InteropServices.UnmanagedType.LPStr)]
 		public string hardware;
@@ -45,7 +45,7 @@ public class NHVD
 	}
 
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-	public struct nhvd_depth_config
+	public struct unhvd_depth_config
 	{	
 		public float ppx;
 		public float ppy;
@@ -55,7 +55,7 @@ public class NHVD
 	}
 
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-	public struct nhvd_frame
+	public struct unhvd_frame
 	{
 		public int width;
 		public int height;
@@ -71,7 +71,7 @@ public class NHVD
 	}
 
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-	public struct nhvd_point_cloud
+	public struct unhvd_point_cloud
 	{
 		public System.IntPtr data;
 		public System.IntPtr colors;
@@ -79,97 +79,97 @@ public class NHVD
 		public int used;
 	}
 
-	/// Return Type: nhvd*
-	///net_config: nhvd_net_config*
-	///hw_config: nhvd_hw_config*
-	///depth_config: nhvd_depth_config*
+	/// Return Type: unhvd*
+	///net_config: unhvd_net_config*
+	///hw_config: unhvd_hw_config*
+	///depth_config: unhvd_depth_config*
 	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
 	[DllImport ("__Internal")]
 	#else
-	[DllImport ("nhvd")]
+	[DllImport ("unhvd")]
 	#endif
-	public static extern System.IntPtr nhvd_init(ref nhvd_net_config net_config, [In]nhvd_hw_config[] hw_configs, int hw_size, ref nhvd_depth_config depth_config);
+	public static extern System.IntPtr unhvd_init(ref unhvd_net_config net_config, [In]unhvd_hw_config[] hw_configs, int hw_size, ref unhvd_depth_config depth_config);
 
-	///Return Type: nhvd*
-	///net_config: nhvd_net_config*
-	///hw_config: nhvd_hw_config*
-	///depth_config: nhvd_depth_config*
+	///Return Type: unhvd*
+	///net_config: unhvd_net_config*
+	///hw_config: unhvd_hw_config*
+	///depth_config: unhvd_depth_config*
 	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
 	[DllImport ("__Internal")]
 	#else
-	[DllImport ("nhvd")]
+	[DllImport ("unhvd")]
 	#endif
-	private static extern System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config, int hw_size, System.IntPtr depth_config) ;
+	private static extern System.IntPtr unhvd_init(ref unhvd_net_config net_config, ref unhvd_hw_config hw_config, int hw_size, System.IntPtr depth_config) ;
 
-	public static System.IntPtr nhvd_init(ref nhvd_net_config net_config, ref nhvd_hw_config hw_config) 
+	public static System.IntPtr unhvd_init(ref unhvd_net_config net_config, ref unhvd_hw_config hw_config) 
 	{
-		return nhvd_init(ref net_config, ref hw_config, 1, System.IntPtr.Zero);
+		return unhvd_init(ref net_config, ref hw_config, 1, System.IntPtr.Zero);
 	}
 
 	/// Return Type: void
-	///n: nhvd *
+	///n: unhvd *
 	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
 	[DllImport ("__Internal")]
 	#else
-	[DllImport ("nhvd")]
+	[DllImport ("unhvd")]
 	#endif
-	public static extern void nhvd_close(System.IntPtr n) ;
+	public static extern void unhvd_close(System.IntPtr n) ;
 
 	/// Return Type: int
-	///n: nhvd*
-	///frame: nhvd_frame*
-	///pc: nhvd_point_cloud*
+	///n: unhvd*
+	///frame: unhvd_frame*
+	///pc: unhvd_point_cloud*
 	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
 	[DllImport ("__Internal")]
 	#else
-	[DllImport ("nhvd")]
+	[DllImport ("unhvd")]
 	#endif
-	public static extern  int nhvd_get_begin(System.IntPtr n, ref nhvd_frame frame, ref nhvd_point_cloud pc) ;
+	public static extern  int unhvd_get_begin(System.IntPtr n, ref unhvd_frame frame, ref unhvd_point_cloud pc) ;
 
 	/// Return Type: int
-	///n: nhvd *
+	///n: unhvd *
 	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
 	[DllImport ("__Internal")]
 	#else
-	[DllImport ("nhvd")]
+	[DllImport ("unhvd")]
 	#endif
-	public static extern int nhvd_get_end(System.IntPtr n) ;
-
-	/// Return Type: int
-	///n: void*
-	///frame: nhvd_frame*
-	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
-	[DllImport ("__Internal")]
-	#else
-	[DllImport ("nhvd")]
-	#endif
-	public static extern int nhvd_get_frame_begin(System.IntPtr n, ref nhvd_frame frame);
-
-	/// Return Type: int
-	///n: nhvd *
-	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
-	[DllImport ("__Internal")]
-	#else
-	[DllImport ("nhvd")]
-	#endif
-	public static extern int nhvd_get_frame_end(System.IntPtr n) ;
+	public static extern int unhvd_get_end(System.IntPtr n) ;
 
 	/// Return Type: int
 	///n: void*
-	///pc: nhvd_point_cloud*
+	///frame: unhvd_frame*
 	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
 	[DllImport ("__Internal")]
 	#else
-	[DllImport ("nhvd")]
+	[DllImport ("unhvd")]
 	#endif
-	public static extern int nhvd_get_point_cloud_begin(System.IntPtr n, ref nhvd_point_cloud pc);
+	public static extern int unhvd_get_frame_begin(System.IntPtr n, ref unhvd_frame frame);
 
 	/// Return Type: int
-	///n: nhvd *
+	///n: unhvd *
 	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
 	[DllImport ("__Internal")]
 	#else
-	[DllImport ("nhvd")]
+	[DllImport ("unhvd")]
 	#endif
-	public static extern int nhvd_get_point_cloud_end(System.IntPtr n) ;
+	public static extern int unhvd_get_frame_end(System.IntPtr n) ;
+
+	/// Return Type: int
+	///n: void*
+	///pc: unhvd_point_cloud*
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("unhvd")]
+	#endif
+	public static extern int unhvd_get_point_cloud_begin(System.IntPtr n, ref unhvd_point_cloud pc);
+
+	/// Return Type: int
+	///n: unhvd *
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("unhvd")]
+	#endif
+	public static extern int unhvd_get_point_cloud_end(System.IntPtr n) ;
 }
