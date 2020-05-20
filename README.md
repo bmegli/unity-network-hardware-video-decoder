@@ -1,4 +1,4 @@
-# unity-network-hardware-video-decoder
+# UNHVD Unity Network Hardware Video Decoder
 
 Example of video and point cloud streaming with hardware decoding and custom [MLSP](https://github.com/bmegli/minimal-latency-streaming-protocol) protocol:
 
