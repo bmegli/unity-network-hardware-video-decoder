@@ -87,7 +87,7 @@ cmake ..
 make
 
 # finally copy the native plugin library to Unity project
-cp libnhvd.so ../../../Assets/Plugins/x86_64/libunhvd.so
+cp libunhvd.so ../../../Assets/Plugins/x86_64/libunhvd.so
 ```
 
 ## Testing
