@@ -21,37 +21,37 @@ public class PointCloudRenderer : MonoBehaviour
 	public string ip = "";
 	public ushort port = 9768;
 
-	private IntPtr nhvd;
-	private NHVD.nhvd_frame frame = new NHVD.nhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] };
-	private NHVD.nhvd_point_cloud point_cloud = new NHVD.nhvd_point_cloud {data = System.IntPtr.Zero, size=0, used=0};
+	private IntPtr unhvd;
+	private UNHVD.unhvd_frame frame = new UNHVD.unhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] };
+	private UNHVD.unhvd_point_cloud point_cloud = new UNHVD.unhvd_point_cloud {data = System.IntPtr.Zero, size=0, used=0};
 
 	private Mesh mesh;
 
 	void Awake()
 	{
-		NHVD.nhvd_net_config net_config = new NHVD.nhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
-		NHVD.nhvd_hw_config[] hw_config = new NHVD.nhvd_hw_config[]
+		UNHVD.unhvd_net_config net_config = new UNHVD.unhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
+		UNHVD.unhvd_hw_config[] hw_config = new UNHVD.unhvd_hw_config[]
 		{
-			new NHVD.nhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="p010le", width=848, height=480, profile=2},
-			new NHVD.nhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="rgb0", width=848, height=480, profile=1}
+			new UNHVD.unhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="p010le", width=848, height=480, profile=2},
+			new UNHVD.unhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="rgb0", width=848, height=480, profile=1}
 		};
 
 		//For depth units explanation see:
 		//https://github.com/bmegli/realsense-depth-to-vaapi-hevc10/wiki/How-it-works#depth-units
-		NHVD.nhvd_depth_config depth_config = new NHVD.nhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f};
-		//NHVD.nhvd_depth_config depth_config = new NHVD.nhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f};
+		UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f};
+		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f};
+		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f};
+		unhvd=UNHVD.unhvd_init (ref net_config, hw_config, hw_config.Length, ref depth_config);
 
-		nhvd=NHVD.nhvd_init (ref net_config, hw_config, hw_config.Length, ref depth_config);
-
-		if (nhvd == IntPtr.Zero)
+		if (unhvd == IntPtr.Zero)
 		{
-			Debug.Log ("failed to initialize NHVD");
+			Debug.Log ("failed to initialize UNHVD");
 			gameObject.SetActive (false);
 		}		
 	}
 	void OnDestroy()
 	{
-		NHVD.nhvd_close (nhvd);
+		UNHVD.unhvd_close (unhvd);
 	}
 
 	private void PrepareMesh(int size)
@@ -87,7 +87,7 @@ public class PointCloudRenderer : MonoBehaviour
 
 	void LateUpdate ()
 	{
-		if (NHVD.nhvd_get_point_cloud_begin(nhvd, ref point_cloud) == 0)
+		if (UNHVD.unhvd_get_point_cloud_begin(unhvd, ref point_cloud) == 0)
 		{
 			PrepareMesh(point_cloud.size);
 
@@ -105,7 +105,7 @@ public class PointCloudRenderer : MonoBehaviour
 			}
 		}
 
-		if (NHVD.nhvd_get_point_cloud_end (nhvd) != 0)
-			Debug.LogWarning ("Failed to get NHVD point cloud data");
+		if (UNHVD.unhvd_get_point_cloud_end (unhvd) != 0)
+			Debug.LogWarning ("Failed to get UNHVD point cloud data");
 	}
 }
