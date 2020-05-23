@@ -172,6 +172,7 @@ For good results:
 - tune Realsense resolution and camera intrinsics
 - update Realsense firmware (>= 5.12.1.0 unlocks [more](https://github.com/bmegli/realsense-depth-to-vaapi-hevc10/wiki/How-it-works#depth-units) Depth Units options)
 - tune Realsense Depth Units in RNHVE and UNHVD
+- set depth min_margin in UNHVD to match your Realsense device MinZ
 - tune encoding bitrate in RNHVE CLI
 - tune encoding options in RNHVE code (e.g. increase B frames)
 

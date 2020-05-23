@@ -52,6 +52,8 @@ public class UNHVD
 		public float fx;    
 		public float fy;
 		public float depth_unit;
+		public float min_margin;
+		public float max_margin;
 	}
 
 	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]

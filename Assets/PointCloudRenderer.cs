@@ -38,9 +38,14 @@ public class PointCloudRenderer : MonoBehaviour
 
 		//For depth units explanation see:
 		//https://github.com/bmegli/realsense-depth-to-vaapi-hevc10/wiki/How-it-works#depth-units
-		UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f};
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f};
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f};
+
+		//For MinZ formula see BKMs_Tuning_RealSense_D4xx_Cam.pdf
+		//For D435 at 848x480 the MinZ is ~16.8cm, in our result unit min_margin is 0.168
+		//max_margin is arbitrarilly set
+
+		UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f };
+		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
+		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f, min_margin = 0.168f, max_margin = 0.01f};
 		unhvd=UNHVD.unhvd_init (ref net_config, hw_config, hw_config.Length, ref depth_config);
 
 		if (unhvd == IntPtr.Zero)
