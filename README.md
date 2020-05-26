@@ -176,6 +176,16 @@ For good results:
 - tune encoding bitrate in RNHVE CLI
 - tune encoding options in RNHVE code (e.g. increase B frames)
 
+## OS tweaks
+
+If you experience [stuttering with artifacts](https://github.com/bmegli/unity-network-hardware-video-decoder/issues/10#issuecomment-633255931) increase UDP buffer size.
+
+```bash
+# here 10 x the the default value on my system
+sudo sh -c "echo 2129920 > /proc/sys/net/core/rmem_max"
+sudo sh -c "echo 2129920 > /proc/sys/net/core/rmem_default"
+```
+
 ## License
 
 Code in this repository and my dependencies are licensed under Mozilla Public License, v. 2.0
