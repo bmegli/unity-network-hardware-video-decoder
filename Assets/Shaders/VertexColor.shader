@@ -26,7 +26,7 @@ Shader "Custom/VertexColor" {
          
             VertexOutput o;
             o.pos = UnityObjectToClipPos(v.v);
-            o.col = float4(v.color.r, v.color.r, v.color.r  , 1.0f);
+            o.col = float4(v.color.r, v.color.g, v.color.b  , 1.0f);
              
             return o;
         }
