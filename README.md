@@ -118,11 +118,13 @@ If you have Realsense camera you may use [RNHVE](https://github.com/bmegli/reals
 #### Video
 
 ```bash
-# assuming you build NHVE and RNHVE, port is 9766, VAAPI device is /dev/dri/renderD128
-# in NHVE or RNHVE build directory
+# assuming you build NHVE port is 9766, VAAPI device is /dev/dri/renderD128
+# in NHVE build directory
 ./nhve-stream-h264 127.0.0.1 9766 10 /dev/dri/renderD128
 # if everything went well you will see 10 seconds video (moving through grayscale).
 
+# assuming you build RNHVE, port is 9766, VAAPI device is /dev/dri/renderD128
+# in RNHVE build directory
 ./realsense-nhve-h264 127.0.0.1 9766 color 640 360 30 20 /dev/dri/renderD128
 # if everything went well you will see 20 seconds video streamed from Realsense camera.
 ```
