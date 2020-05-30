@@ -94,61 +94,42 @@ cp libunhvd.so ../../../Assets/Plugins/x86_64/libunhvd.so
 
 Assuming you are using VAAPI device.
 
-### Receiving (Unity) side
+1. Open the project in Unity
+2. Choose and enable GameObject
+4. For Script define Configuration (`Port`, `Device`)
+5. For troubleshooting use programs in `PluginsSource/unhvd-native/build`
 
-- open the project in Unity
-- choose `Canvas` -> `CameraView` -> `RawImage`
-- make sure it is enabled
-- for `RawImageVideoRenderer` component define
-	- `Device`
-	- note the `Port`
-
-For troubleshooting you may use:
-
-```bash
-# in the PluginsSource/unhvd-native/build
-./unhvd-frame-example
-```
-
-This program prints diagnostic information that you would not see from Unity.
+|  Element         | Video                                 |  Point Clouds                           |
+|------------------|---------------------------------------|-----------------------------------------|
+| GameObject       | `Canvas` -> `CameraView` -> `RawImage` (UI) <br> `VideoQuad` (scene) | `PointCloud`                            |
+| Script           | `RawImageVideoRenderer` <br> `VideoRenderer` | `PointCloudRenderer`             |
+| Configuration    | `Port` (network) <br> `Device` (acceleration> <br> script code | `Port` (network) <br> `Device` (acceleration) <br> script code                        |
+| Troubleshooting  | `unhvd-frame-example`                 | `unhvd-cloud-example`                   |
 
 ### Sending side
+|  Element         | Video                                 |  Point Clouds                           |
+|------------------|---------------------------------------|-----------------------------------------|
+| Sending side     | NHVE `nhve-stream-h264` <br> RNHVE `realsense-nhve-h264`| RNHVE `realsense-nhve-hevc` <br> RNHVE `realsense-nhve-depth-ir`|
 
 For a quick test you may use [NHVE](https://github.com/bmegli/network-hardware-video-encoder) procedurally generated H.264 video.
 
+If you have Realsense camera you may use [RNHVE](https://github.com/bmegli/realsense-network-hardware-video-encoder).
+
+#### Video
+
 ```bash
-# assuming you build NHVE, port is 9766, VAAPI device is /dev/dri/renderD128
-# in NHVE build directory
+# assuming you build NHVE and RNHVE, port is 9766, VAAPI device is /dev/dri/renderD128
+# in NHVE or RNHVE build directory
 ./nhve-stream-h264 127.0.0.1 9766 10 /dev/dri/renderD128
-```
+# if everything went well you will see 10 seconds video (moving through grayscale).
 
-If everything went well you will see 10 seconds video (moving through grayscale).
-
-If you have Realsense camera you may use [realsense-network-hardware-video-encoder](https://github.com/bmegli/realsense-network-hardware-video-encoder).
-
-```bash
-# assuming you build RNHVE, port is 9766, VAAPI device is /dev/dri/renderD128
-# in RNHVE build directory
 ./realsense-nhve-h264 127.0.0.1 9766 color 640 360 30 20 /dev/dri/renderD128
+# if everything went well you will see 20 seconds video streamed from Realsense camera.
 ```
 
-If everything went well you will see 20 seconds video streamed from Realsense camera.
+#### Point Clouds
 
-### Streaming to scene (not UI)
-
-Configure as above:
-- `VideoQuad` `VideoRenderer` componenent
-- make sure it is enabled
-
-### Point cloud streaming
-
-Assuming Realsense D435 camera with 848x480.
-
-Configure as above:
-- `PointCloud` `PointCloudRenderer` component
-- make sure it is enabled
-
-If you have Realsense camera you may use [realsense-network-hardware-video-encoder](https://github.com/bmegli/realsense-network-hardware-video-encoder).
+Assuming Realsense D435 camera and 848x480.
 
 ```bash
 # assuming you build RNHVE, port is 9768, VAAPI device is /dev/dri/renderD128
@@ -156,13 +137,6 @@ If you have Realsense camera you may use [realsense-network-hardware-video-encod
 ./realsense-nhve-hevc 127.0.0.1 9768 depth 848 480 30 500 /dev/dri/renderD128
 # or for textured point cloud (only D435)
 ./realsense-nhve-depth-ir 127.0.0.1 9768 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
-```
-
-For troubleshooting you may use:
-
-```bash
-# in the PluginsSource/unhvd-native/build
-./unhvd-cloud-example
 ```
 
 If you are using different Realsense device/resolution you will have to configure camera intrinsics in:
