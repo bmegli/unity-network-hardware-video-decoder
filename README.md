@@ -109,7 +109,7 @@ Assuming you are using VAAPI device.
 ### Sending side
 |  Element         | Video                                 |  Point Clouds                           |
 |------------------|---------------------------------------|-----------------------------------------|
-| Sending side     | NHVE `nhve-stream-h264` <br> RNHVE `realsense-nhve-h264`| RNHVE `realsense-nhve-hevc` <br> RNHVE `realsense-nhve-depth-ir`|
+| Sending side     | NHVE `nhve-stream-h264` <br> RNHVE `realsense-nhve-h264` | RNHVE `realsense-nhve-hevc` <br> RNHVE `realsense-nhve-depth-ir` <br> RNHVE `realsense-nhve-depth-color` |
 
 For a quick test you may use [NHVE](https://github.com/bmegli/network-hardware-video-encoder) procedurally generated H.264 video.
 
@@ -137,12 +137,21 @@ Assuming Realsense D435 camera and 848x480.
 # assuming you build RNHVE, port is 9768, VAAPI device is /dev/dri/renderD128
 # in RNHVE build directory
 ./realsense-nhve-hevc 127.0.0.1 9768 depth 848 480 30 500 /dev/dri/renderD128
-# or for textured point cloud (only D435)
+# for infrared textured point cloud (only D435)
 ./realsense-nhve-depth-ir 127.0.0.1 9768 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
+# for color texture point cloud, depth aligned (D435 tested)
+./realsense-nhve-depth-color 127.0.01 9768 color 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001f
+# for color textured point cloud, color aligned (D435 tested)
+./realsense-nhve-depth-color 127.0.01 9768 color 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001f
 ```
 
 If you are using different Realsense device/resolution you will have to configure camera intrinsics in:
-- `PointCloud` `PointCloudRenderer` source
+- `PointCloud` [`PointCloudRenderer`](https://github.com/bmegli/unity-network-hardware-video-decoder/blob/master/Assets/PointCloudRenderer.cs#L46) source
+- RNHVE depth pipelines output intrinsics while starting
+- only `fx`, `fy`, `ppx`, `ppy` matter
+- your D435 intrinsics also differ (to a small extent)
+- depth aligned data uses depth intrinsics
+- color aligned data uses color intrinsics
 
 For good results:
 - tune Realsense resolution and camera intrinsics
