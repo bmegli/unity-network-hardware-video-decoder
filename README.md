@@ -140,8 +140,8 @@ Assuming Realsense D435 camera and 848x480.
 # for infrared textured point cloud (only D435)
 ./realsense-nhve-depth-ir 127.0.0.1 9768 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
 # for color texture point cloud, depth aligned (D435 tested)
-./realsense-nhve-depth-color 127.0.01 9768 color 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001f
-# for color textured point cloud, color aligned (D435 tested)
+./realsense-nhve-depth-color 127.0.01 9768 depth 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001f
+# for color textured point cloud, color aligned (D435 tested), color intrinsics required
 ./realsense-nhve-depth-color 127.0.01 9768 color 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001f
 ```
 
