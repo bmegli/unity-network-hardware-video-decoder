@@ -145,21 +145,9 @@ Assuming Realsense D435 camera and 848x480.
 ./realsense-nhve-depth-color 127.0.01 9768 color 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001f
 ```
 
-If you are using different Realsense device/resolution you will have to configure camera intrinsics in:
-- `PointCloud` [`PointCloudRenderer`](https://github.com/bmegli/unity-network-hardware-video-decoder/blob/master/Assets/PointCloudRenderer.cs#L46) source
-- RNHVE depth pipelines output intrinsics while starting
-- only `fx`, `fy`, `ppx`, `ppy` matter
-- your D435 intrinsics also differ (to a small extent)
-- depth aligned data uses depth intrinsics
-- color aligned data uses color intrinsics
+If you are using different Realsense device/resolution you will have to configure camera intrinsics.
 
-For good results:
-- tune Realsense resolution and camera intrinsics
-- update Realsense firmware (>= 5.12.1.0 unlocks [more](https://github.com/bmegli/realsense-depth-to-vaapi-hevc10/wiki/How-it-works#depth-units) Depth Units options)
-- tune Realsense Depth Units in RNHVE and UNHVD
-- set depth min_margin in UNHVD to match your Realsense device MinZ
-- tune encoding bitrate in RNHVE CLI
-- tune encoding options in RNHVE code (e.g. increase B frames)
+See [point clouds configuration](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Point-clouds-configuration) for the details.
 
 ## OS tweaks
 
