@@ -48,7 +48,13 @@ public class PointCloudRenderer : MonoBehaviour
 		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f, min_margin = 0.168f, max_margin = 0.01f};
 
 		//sample config for depth + color, depth aligned to 848x480 color (so we use color intrinsics, not depth intrinsics)
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 425.038f, ppy=249.114f, fx=618.377f, fy=618.411f, depth_unit = 0.00003125f, min_margin = 0.168f, max_margin = 0.01f};
+		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 425.038f, ppy=249.114f, fx=618.377f, fy=618.411f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f};
+
+		//sample config for L515 640x480 with depth units resulting in 2.5 mm precision and 2.5575 m range (alignment to depth)
+		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 358.781f, ppy=246.297f, fx=470.941f, fy=470.762f, depth_unit = 0.0000390625f, min_margin = 0.19f, max_margin = 0.01f};
+
+		//sample config for L515 1280x720 with depth units resulting in 2.5 mm precision and 2.5575 m range (alignment to color)
+		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 647.881f, ppy=368.939f, fx=906.795f, fy=906.768f, depth_unit = 0.0000390625f, min_margin = 0.19f, max_margin = 0.01f};
 
 		unhvd=UNHVD.unhvd_init (ref net_config, hw_config, hw_config.Length, ref depth_config);
 
