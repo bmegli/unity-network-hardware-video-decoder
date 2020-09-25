@@ -1,7 +1,7 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-// Code source:
+﻿// Original code source:
 // http://www.kamend.com/2014/05/rendering-a-point-cloud-inside-unity/
+// Modifications:
+// - point size varying with distance
 
 Shader "Custom/VertexColor" {
     SubShader {
@@ -11,6 +11,8 @@ Shader "Custom/VertexColor" {
         CGPROGRAM
         #pragma vertex vert
         #pragma fragment frag
+
+        #include "UnityCG.cginc"
  
         struct VertexInput {
             float4 v : POSITION;
@@ -20,6 +22,7 @@ Shader "Custom/VertexColor" {
         struct VertexOutput {
             float4 pos : SV_POSITION;
             float4 col : COLOR;
+            float size : PSIZE;
         };
          
         VertexOutput vert(VertexInput v) {
@@ -27,7 +30,7 @@ Shader "Custom/VertexColor" {
             VertexOutput o;
             o.pos = UnityObjectToClipPos(v.v);
             o.col = float4(v.color.r, v.color.g, v.color.b  , 1.0f);
-             
+            o.size = 0.25 / o.pos.w;
             return o;
         }
          
