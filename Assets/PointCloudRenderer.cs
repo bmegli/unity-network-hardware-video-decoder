@@ -11,6 +11,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -83,25 +84,26 @@ public class PointCloudRenderer : MonoBehaviour
 		if(mesh.vertexCount == size)
 			return;
 
-		mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-		Vector3[] vertices = new Vector3[size];
-		for(int i=0;i<size;i++)
-			vertices[i] = new Vector3();
-		mesh.vertices = vertices;
-
-		int[] indices = new int[size];
-		for(int i=0;i<size;++i)
-			indices[i] = i;
-		mesh.SetIndices(indices, MeshTopology.Points,0);
+		mesh.MarkDynamic();
 
 		//we don't want to recalculate bounds for half million dynamic points so just set wide bounds
 		mesh.bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
 
-		Color32[] colors = new Color32[size];
-		for(int i=0;i<size;++i)
-			colors[i] = new Color32(255, 0, 0, 255);
+		//make Unity internal mesh data match our native mesh data (separate streams for position and colors)
+		VertexAttributeDescriptor[] layout = new[]
+		{
+			new VertexAttributeDescriptor(UnityEngine.Rendering.VertexAttribute.Position, VertexAttributeFormat.Float32, 3, 0),
+			new VertexAttributeDescriptor(UnityEngine.Rendering.VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4, 1),
+		};
 
-		mesh.SetColors(colors);
+		mesh.SetVertexBufferParams(size, layout);
+
+		mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+		int[] indices = new int[size];
+		for(int i=0;i<size;++i)
+			indices[i] = i;
+
+		mesh.SetIndices(indices, MeshTopology.Points,0);
 
 		GetComponent<MeshFilter>().mesh = mesh;
 	}
@@ -121,8 +123,8 @@ public class PointCloudRenderer : MonoBehaviour
 				NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref pc, AtomicSafetyHandle.Create());
 				NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref colors, AtomicSafetyHandle.Create());
 				#endif
-				mesh.SetVertices(pc, 0, point_cloud.size);
-				mesh.SetColors(colors, 0, point_cloud.size);
+				mesh.SetVertexBufferData(pc, 0, 0, point_cloud.size, 0, MeshUpdateFlags.DontNotifyMeshUsers | MeshUpdateFlags.DontRecalculateBounds);
+				mesh.SetVertexBufferData(colors, 0, 0, point_cloud.size, 1, MeshUpdateFlags.DontNotifyMeshUsers | MeshUpdateFlags.DontRecalculateBounds);
 			}
 		}
 
