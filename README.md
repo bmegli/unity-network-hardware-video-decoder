@@ -137,8 +137,10 @@ Assuming Realsense D435 camera and 848x480.
 # assuming you build RNHVE, port is 9768, VAAPI device is /dev/dri/renderD128
 # in RNHVE build directory
 ./realsense-nhve-hevc 127.0.0.1 9768 depth 848 480 30 500 /dev/dri/renderD128
-# for infrared textured point cloud
-./realsense-nhve-depth-ir 127.0.0.1 9768 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
+# for infrared textured point cloud 
+./realsense-nhve-depth-ir 127.0.0.1 9768 ir 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
+# for infrared rgb textured point cloud (D415/D455)
+./realsense-nhve-depth-ir 127.0.0.1 9768 ir-rgb 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
 # for color textured point cloud, depth aligned
 ./realsense-nhve-depth-color 127.0.01 9768 depth 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001f
 # for color textured point cloud, color aligned, color intrinsics required
