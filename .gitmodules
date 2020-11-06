@@ -1,3 +1,6 @@
 [submodule "PluginsSource/unhvd-native"]
 	path = PluginsSource/unhvd-native
 	url = https://github.com/bmegli/unhvd-native.git
+[submodule "PluginsSource/robot-control"]
+	path = PluginsSource/robot-control
+	url = https://github.com/bmegli/robot-control.git

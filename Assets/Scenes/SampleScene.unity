@@ -243,9 +243,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &202402597
 MeshRenderer:
@@ -549,13 +549,17 @@ GameObject:
   - component: {fileID: 433776890}
   - component: {fileID: 433776889}
   - component: {fileID: 433776888}
+  - component: {fileID: 433776893}
+  - component: {fileID: 433776892}
+  - component: {fileID: 433776894}
+  - component: {fileID: 433776895}
   m_Layer: 0
   m_Name: PointCloud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &433776888
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -632,6 +636,68 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &433776892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433776887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2112ee090d5fafa408ae1494b745db8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxLinearSpeedMmPerSec: 400
+  MaxAngularSpeedDegPerSec: 60
+--- !u!114 &433776893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433776887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc41ab95d5e3374c9bdd4228a8f5860d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wheelDiameterMm: 120
+  wheelbaseMm: 400
+  encoderCountsPerRotation: 1196.8
+  maxEncoderCountsPerSecond: 2000
+  reverseMotorPolarity: 0
+--- !u!114 &433776894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433776887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4253df95099612408b1b840a4be3e423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontal: Horizontal
+  vertical: Vertical
+  acceleration: Acceleration
+  accelerationPower: 0.5
+--- !u!114 &433776895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433776887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68599dcf28890646bba52a535662af02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ip: 192.168.0.30
+  port: 10000
+  packetDelayMs: 50
 --- !u!1 &785509537
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,6 +751,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
