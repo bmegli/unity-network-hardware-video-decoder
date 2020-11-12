@@ -12,6 +12,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 public class UNHVD
 {
@@ -79,6 +80,8 @@ public class UNHVD
 		public System.IntPtr colors;
 		public int size;
 		public int used;
+		public Vector3 position;
+		public Quaternion rotation;
 	}
 
 	/// Return Type: unhvd*
