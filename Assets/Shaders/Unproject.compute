@@ -1,7 +1,15 @@
 ﻿#pragma kernel UnprojectKernel
 
-Texture2D depthTexture;
-AppendStructuredBuffer<float3> vertices;
+Texture2D<float> depthTexture;
+Texture2D<float> colorTexture;
+
+struct VertexData
+{
+    float4 position;
+    float4 color;
+};
+
+AppendStructuredBuffer<VertexData> vertices;
 
 [numthreads(8,8,1)]
 void UnprojectKernel (uint3 id : SV_DispatchThreadID)
@@ -19,6 +27,9 @@ void UnprojectKernel (uint3 id : SV_DispatchThreadID)
     if(d < min_margin)
         return;
 
-    float3 p = { d * (id.x - ppx) / fx, - d * (id.y - ppy) / fy, d };
-    vertices.Append(p);
+    float4 p = { d * (id.x - ppx) / fx, - d * (id.y - ppy) / fy, d, 1 };
+    float4 c = colorTexture[id.xy];
+
+    VertexData v = {p, c};
+    vertices.Append(v);
 }

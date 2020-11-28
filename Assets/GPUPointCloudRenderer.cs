@@ -25,9 +25,15 @@ public class GPUPointCloudRenderer : MonoBehaviour
 	public Shader pointCloudShader;
 
 	private IntPtr unhvd;
-	private UNHVD.unhvd_frame frame = new UNHVD.unhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] };
+
+	private UNHVD.unhvd_frame[] frame = new UNHVD.unhvd_frame[]
+	{
+		new UNHVD.unhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] },
+		new UNHVD.unhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] }
+	};
 
 	private Texture2D depthTexture;
+	private Texture2D colorTexture;
 
 	private ComputeBuffer vertexBuffer;
 	private ComputeBuffer countBuffer;
@@ -36,12 +42,18 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 	void Awake()
 	{
-		UNHVD.unhvd_net_config net_config = new UNHVD.unhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
-		UNHVD.unhvd_hw_config hw_config = new UNHVD.unhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="p010le", width=848, height=480, profile=2};
-		
-		Debug.Log("Supports R16" + SystemInfo.SupportsTextureFormat(TextureFormat.R16));
+		Debug.Log("Supports R16 " + SystemInfo.SupportsTextureFormat(TextureFormat.R16));
 
-		unhvd = UNHVD.unhvd_init (ref net_config, ref hw_config);
+		UNHVD.unhvd_net_config net_config = new UNHVD.unhvd_net_config{ip=this.ip, port=this.port, timeout_ms=500 };
+		UNHVD.unhvd_hw_config[] hw_config = new UNHVD.unhvd_hw_config[]
+		{
+			new UNHVD.unhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="p010le", width=848, height=480, profile=2},
+			new UNHVD.unhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="rgb0", width=848, height=480, profile=1}
+		};
+
+		IntPtr nullPtr = IntPtr.Zero;
+		
+		unhvd = UNHVD.unhvd_init (ref net_config, hw_config, hw_config.Length, IntPtr.Zero);
 	
 		if (unhvd == IntPtr.Zero)
 		{
@@ -50,15 +62,15 @@ public class GPUPointCloudRenderer : MonoBehaviour
 			return;
 		}
 
-		vertexBuffer = new ComputeBuffer(848*480, sizeof(float)*3, ComputeBufferType.Append);
+		vertexBuffer = new ComputeBuffer(848*480, 2 * sizeof(float)*4, ComputeBufferType.Append);
 		countBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.IndirectArguments);
-
-		Vector3[] positions = new Vector3[848*480];
+/* 
+		Vector4[] positions = new Vector4[848*480];
 		for(int i=0;i<positions.Length;++i)
-			positions[i] = new Vector3(0, 0, 0);//i/100.0f, i/100.0f, i/100.0f);
+			positions[i] = new Vector4(0, 0, 0, 1);//i/100.0f, i/100.0f, i/100.0f);
 
 		vertexBuffer.SetData(positions);
-
+*/
 		unprojectionShader.SetBuffer(0, "vertices", vertexBuffer);
 	}
 
@@ -92,22 +104,33 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 	private void AdaptTexture()
 	{
-		if(depthTexture == null || depthTexture.width != frame.width || depthTexture.height != frame.height)
+		if(depthTexture == null || depthTexture.width != frame[0].width || depthTexture.height != frame[0].height)
 		{
-			depthTexture = new Texture2D (frame.width, frame.height, TextureFormat.R16, false);
+			depthTexture = new Texture2D (frame[0].width, frame[0].height, TextureFormat.R16, false);
 			unprojectionShader.SetTexture(0, "depthTexture", depthTexture);
 		}
+
+		if(colorTexture == null || colorTexture.width != frame[1].width || colorTexture.height != frame[1].height)
+		{
+			colorTexture = new Texture2D (frame[1].width, frame[1].height, TextureFormat.BGRA32, false);
+			unprojectionShader.SetTexture(0, "colorTexture", colorTexture);
+		}
+
 	}
 
 	void LateUpdate ()
 	{
 		bool updateNeeded = false;
 
-		if (UNHVD.unhvd_get_frame_begin(unhvd, ref frame) == 0)
+		if (UNHVD.unhvd_get_frame_begin(unhvd, frame) == 0)
 		{
 			AdaptTexture();
-			depthTexture.LoadRawTextureData (frame.data[0], frame.linesize[0] * frame.height * 2);
+			depthTexture.LoadRawTextureData (frame[0].data[0], frame[0].linesize[0] * frame[0].height);
 			depthTexture.Apply (false);
+
+			colorTexture.LoadRawTextureData (frame[1].data[0], frame[1].linesize[0] * frame[1].height);
+			colorTexture.Apply (false);
+
 			updateNeeded = true;
 		}
 
