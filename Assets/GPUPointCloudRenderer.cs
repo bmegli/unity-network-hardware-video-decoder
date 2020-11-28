@@ -27,7 +27,8 @@ public class GPUPointCloudRenderer : MonoBehaviour
 	private IntPtr unhvd;
 	private UNHVD.unhvd_frame frame = new UNHVD.unhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] };
 
-	private ComputeBuffer depthBuffer;
+	private Texture2D depthTexture;
+
 	private ComputeBuffer vertexBuffer;
 	private ComputeBuffer countBuffer;
 	
@@ -49,8 +50,6 @@ public class GPUPointCloudRenderer : MonoBehaviour
 			return;
 		}
 
-		depthBuffer = new ComputeBuffer(848*480/2, 4); //stride * height but we have 2 uint16_t in every element (4 bytes)
-		//vertexBuffer = new ComputeBuffer(848*480, sizeof(float)*3);
 		vertexBuffer = new ComputeBuffer(848*480, sizeof(float)*3, ComputeBufferType.Append);
 		countBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.IndirectArguments);
 
@@ -58,20 +57,9 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		for(int i=0;i<positions.Length;++i)
 			positions[i] = new Vector3(0, 0, 0);//i/100.0f, i/100.0f, i/100.0f);
 
-		uint[] depths = new uint[848/2*480];
-		for(int i=0;i<depths.Length;++i)
-			depths[i] = 0xFFC0FFC0;
-
-		depthBuffer.SetData(depths);
 		vertexBuffer.SetData(positions);
 
-  		unprojectionShader.SetBuffer(0, "depth", depthBuffer);
 		unprojectionShader.SetBuffer(0, "vertices", vertexBuffer);
-
-		unprojectionShader.Dispatch(0, 848/2, 480/8, 1);
-
-		Debug.Log("vertices count" + vertexBuffer.count);
-		Debug.Log("vertices count from buffer" + getVertexCount());
 	}
 
 	private int getVertexCount()
@@ -86,8 +74,6 @@ public class GPUPointCloudRenderer : MonoBehaviour
 	void OnDestroy()
 	{
 		UNHVD.unhvd_close (unhvd);
-		if(depthBuffer != null)
-			depthBuffer.Release();
 
 		if(vertexBuffer != null)
 			vertexBuffer.Release();
@@ -104,24 +90,25 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		}	
 	}
 
+	private void AdaptTexture()
+	{
+		if(depthTexture == null || depthTexture.width != frame.width || depthTexture.height != frame.height)
+		{
+			depthTexture = new Texture2D (frame.width, frame.height, TextureFormat.R16, false);
+			unprojectionShader.SetTexture(0, "depthTexture", depthTexture);
+		}
+	}
+
 	void LateUpdate ()
 	{
-		//Graphics.DrawProceduralNow(MeshTopology.Points, 848*480, 1);
 		bool updateNeeded = false;
 
 		if (UNHVD.unhvd_get_frame_begin(unhvd, ref frame) == 0)
 		{
-			unsafe
-			{
-				NativeArray<uint> depth = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<uint>(frame.data[0].ToPointer(), frame.linesize[0] * frame.height / 4, Allocator.None);
-
-				#if ENABLE_UNITY_COLLECTIONS_CHECKS
-				NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref depth, AtomicSafetyHandle.Create());
-				#endif
-
-				depthBuffer.SetData(depth);
-				updateNeeded = true;
-			}
+			AdaptTexture();
+			depthTexture.LoadRawTextureData (frame.data[0], frame.linesize[0] * frame.height * 2);
+			depthTexture.Apply (false);
+			updateNeeded = true;
 		}
 
 		if (UNHVD.unhvd_get_frame_end (unhvd) != 0)
@@ -134,7 +121,7 @@ public class GPUPointCloudRenderer : MonoBehaviour
 			return;
 
 		vertexBuffer.SetCounterValue(0);
-		unprojectionShader.Dispatch(0, 848/2, 480, 1);
+		unprojectionShader.Dispatch(0, 848/8, 480/8, 1);
 		Debug.Log("vertices count from buffer" + getVertexCount());
 	}
  

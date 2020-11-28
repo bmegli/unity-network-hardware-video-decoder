@@ -1,61 +1,24 @@
 ﻿#pragma kernel UnprojectKernel
-    
-StructuredBuffer<uint> depth;
-//RWStructuredBuffer<float3> vertices;
+
+Texture2D depthTexture;
 AppendStructuredBuffer<float3> vertices;
 
-//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 358.781f, ppy=246.297f, fx=470.941f, fy=470.762f, depth_unit = 0.0000390625f, min_margin = 0.19f, max_margin = 0.01f};
-//uniform float ppx = 358.781f;
-//uniform float ppy = 246.297f;
-//uniform float fx = 470.941f;    
-//uniform float fy = 470.762f;
-//uniform float depth_unit = 0.0000390625;
-//uniform float min_margin = 0.19f;
-//uniform float max_margin = 0.01f;
-
-/*
-		if( (d = depth->data[r * depth->depth_stride / 2 + c] * h->depth_unit) <= h->min_depth ||
-			     d > h->max_depth)
-				continue;
-
-			pc->data[points][0] = d * (c - h->ppx) / h->fx;
-			pc->data[points][1] = -d * (r - h->ppy) / h->fy;
-			pc->data[points][2] = d;
-
-			const uint32_t *color_line = (uint32_t*)(((uint8_t*)depth->colors) + r * depth->color_stride);
-			pc->colors[points] = depth->colors ? color_line[c] : default_color;
-
-			++points;
-
-*/
-
-[numthreads(1,8,1)]
+[numthreads(8,8,1)]
 void UnprojectKernel (uint3 id : SV_DispatchThreadID)
 {
-    uint depths = depth[id.y * 424  + id.x];
-    uint depth1 = depths & 0x0000FFFF;
-    uint depth2 = depths >> 16;
-
     float ppx = 358.781f;
     float ppy = 246.297f;
     float fx = 470.941f;    
     float fy = 470.762f;
-    float depth_unit = 0.0000390625;
+    float depth_unit = 0.0000390625 * 65472;
     float min_margin = 0.19f;
     float max_margin = 0.01f;
 
-    float d1 = depth1 * depth_unit;
-    float d2 = depth2 * depth_unit;
+    float d = depthTexture[id.xy].r * depth_unit;
 
-    if(d1 > min_margin)
-    {
-        float3 p1 = { d1 * (id.x * 2 - ppx) / fx, - d1 * (id.y - ppy) / fy, d1 };
-        vertices.Append(p1);
-    }
+    if(d < min_margin)
+        return;
 
-    if(d2 > min_margin)
-    {
-        float3 p2 = { d2 * ((id.x * 2 +1) - ppx) / fx, - d2 * (id.y - ppy) / fy, d2 };
-        vertices.Append(p2);
-    }
+    float3 p = { d * (id.x - ppx) / fx, - d * (id.y - ppy) / fy, d };
+    vertices.Append(p);
 }
