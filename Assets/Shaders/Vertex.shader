@@ -7,37 +7,29 @@
         {
             CGPROGRAM
 
-            #pragma vertex Vertex
-            #pragma fragment Fragment
+            #pragma vertex vert
+            #pragma fragment frag
 
             #include "UnityCG.cginc"
  
-            struct Varyings
+            struct VertexData
             {
                 float4 position : SV_Position;
                 float4 color : COLOR;
             };
 
-            struct VertexData
-            {
-                float4 position;
-                float4 color;
-            };
-
             StructuredBuffer<VertexData> vertices;
 
-            Varyings Vertex(uint vid : SV_VertexID)
+            VertexData vert(uint vid : SV_VertexID)
             {
                 VertexData v = vertices[vid];
-                Varyings o;
-
-                o.position = UnityObjectToClipPos(v.position);
-                o.color = v.color;
                 
-                return o;
+                v.position = UnityObjectToClipPos(v.position);
+
+                return v;
             }
 
-            half4 Fragment(Varyings input) : SV_Target
+            float4 frag(VertexData input) : SV_Target
             {
                 return input.color;
             }

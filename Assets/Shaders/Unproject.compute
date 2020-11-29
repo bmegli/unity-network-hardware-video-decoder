@@ -2,6 +2,7 @@
 
 Texture2D<float> depthTexture;
 Texture2D<float> colorTexture;
+Texture2D<float4> unprojectionTexture;
 
 struct VertexData
 {
@@ -14,6 +15,7 @@ AppendStructuredBuffer<VertexData> vertices;
 [numthreads(8,8,1)]
 void UnprojectKernel (uint3 id : SV_DispatchThreadID)
 {
+    /*
     float ppx = 358.781f;
     float ppy = 246.297f;
     float fx = 470.941f;    
@@ -21,13 +23,24 @@ void UnprojectKernel (uint3 id : SV_DispatchThreadID)
     float depth_unit = 0.0000390625 * 65472;
     float min_margin = 0.19f;
     float max_margin = 0.01f;
+    */
+    //float depth_unit = 0.0000390625 * 65472;
+    float min_margin = 0.19f / (0.0000390625 * 65472);
 
-    float d = depthTexture[id.xy].r * depth_unit;
+    //float d = depthTexture[id.xy].r * depth_unit;
+
+    float d = depthTexture[id.xy].r;
 
     if(d < min_margin)
         return;
 
-    float4 p = { d * (id.x - ppx) / fx, - d * (id.y - ppy) / fy, d, 1 };
+    float4 unprojection = unprojectionTexture.Load(id.xyz);
+
+    float4 p = float4(d * unprojection);
+    p.w = 1.0;
+
+    //[d, d, d, 1] * [(id.x - ppx)/fx * DU, (ppy - id.y) / fy * DU, DU, 1]
+    //float4 p = { d * (id.x - ppx) / fx, - d * (id.y - ppy) / fy, d, 1 };
     float4 c = colorTexture[id.xy];
 
     VertexData v = {p, c};
