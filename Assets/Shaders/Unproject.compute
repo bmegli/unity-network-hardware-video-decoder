@@ -29,15 +29,15 @@ void UnprojectKernel (uint3 id : SV_DispatchThreadID)
 
     //float d = depthTexture[id.xy].r * depth_unit;
 
-    float d = depthTexture[id.xy].r;
+    //float d = depthTexture[id.xy].r;
+    float d = depthTexture.Load(id.xyz);
 
     if(d < min_margin)
         return;
 
     float4 unprojection = unprojectionTexture.Load(id.xyz);
 
-    float4 p = float4(d * unprojection);
-    p.w = 1.0;
+    float4 p = float4(d * unprojection.xyz, 1);
 
     //[d, d, d, 1] * [(id.x - ppx)/fx * DU, (ppy - id.y) / fy * DU, DU, 1]
     //float4 p = { d * (id.x - ppx) / fx, - d * (id.y - ppy) / fy, d, 1 };
