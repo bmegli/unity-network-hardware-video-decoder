@@ -103,6 +103,13 @@ public class UNHVD
 	#endif
 	private static extern System.IntPtr unhvd_init(ref unhvd_net_config net_config, ref unhvd_hw_config hw_config, int hw_size, System.IntPtr depth_config) ;
 
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("unhvd")]
+	#endif
+	public static extern System.IntPtr unhvd_init(ref unhvd_net_config net_config, [In]unhvd_hw_config[] hw_configs, int hw_size, System.IntPtr depth_config);
+
 	public static System.IntPtr unhvd_init(ref unhvd_net_config net_config, ref unhvd_hw_config hw_config) 
 	{
 		return unhvd_init(ref net_config, ref hw_config, 1, System.IntPtr.Zero);
@@ -146,6 +153,16 @@ public class UNHVD
 	[DllImport ("unhvd")]
 	#endif
 	public static extern int unhvd_get_frame_begin(System.IntPtr n, ref unhvd_frame frame);
+
+	/// Return Type: int
+	///n: void*
+	///frame: unhvd_frame*
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("unhvd")]
+	#endif
+	public static extern int unhvd_get_frame_begin(System.IntPtr n, [In, Out]unhvd_frame[] frames);
 
 	/// Return Type: int
 	///n: unhvd *

@@ -44,24 +44,26 @@ public class PointCloudRenderer : MonoBehaviour
 		//For D435 at 848x480 the MinZ is ~16.8cm, in our result unit min_margin is 0.168
 		//max_margin is arbitrarilly set
 
-		UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f };
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f, min_margin = 0.168f, max_margin = 0.01f};
+		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f };
+		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
+		//DepthConfig dc - new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f, min_margin = 0.168f, max_margin = 0.01f};
 
 		//sample config for depth + color, depth aligned to 848x480 color (so we use color intrinsics, not depth intrinsics)
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 425.038f, ppy=249.114f, fx=618.377f, fy=618.411f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f};
+		//DepthConfig dc = new DepthConfig{ppx = 425.038f, ppy=249.114f, fx=618.377f, fy=618.411f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f};
 
 		//sample config for L515 640x480 with depth units resulting in 2.5 mm precision and 2.5575 m range (alignment to depth)
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 358.781f, ppy=246.297f, fx=470.941f, fy=470.762f, depth_unit = 0.0000390625f, min_margin = 0.19f, max_margin = 0.01f};
-
+		//DepthConfig dc = new DepthConfig{ppx = 358.781f, ppy=246.297f, fx=470.941f, fy=470.762f, depth_unit = 0.0000390625f, min_margin = 0.19f, max_margin = 0.01f};
+		
 		//sample config for L515 1280x720 with depth units resulting in 2.5 mm precision and 2.5575 m range (alignment to color)
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 647.881f, ppy=368.939f, fx=906.795f, fy=906.768f, depth_unit = 0.0000390625f, min_margin = 0.19f, max_margin = 0.01f};
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 647.881f, ppy=368.939f, fx=906.795f, fy=906.768f, depth_unit = 0.000250f, min_margin = 0.19f, max_margin = 0.01f};
+		//DepthConfig dc = new DepthConfig{ppx = 647.881f, ppy=368.939f, fx=906.795f, fy=906.768f, depth_unit = 0.0000390625f, min_margin = 0.19f, max_margin = 0.01f};
+		//DepthConfig dc = new DepthConfig{ppx = 647.881f, ppy=368.939f, fx=906.795f, fy=906.768f, depth_unit = 0.000250f, min_margin = 0.19f, max_margin = 0.01f};
 
 		//sample config for D455 848x480 with depth units resulting in 2.5 mm precision and 2.5575 m range, MinZ at 848x480 is 350 mm, for depth, depth + ir, depth aligned color
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 426.33f, ppy=239.446f, fx=422.768f, fy=422.768f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
+		//DepthConfig dc = new DepthConfig{ppx = 426.33f, ppy=239.446f, fx=422.768f, fy=422.768f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
 		//as above, alignment to color, distortion model ignored
-		//UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = 419.278f, ppy=244.24f, fx=419.909f, fy=418.804f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
+		//DepthConfig dc = new DepthConfig{ppx = 419.278f, ppy=244.24f, fx=419.909f, fy=418.804f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
+
+		UNHVD.unhvd_depth_config depth_config = new UNHVD.unhvd_depth_config{ppx = dc.ppx, ppy = dc.ppy, fx = dc.fx, fy = dc.fy, depth_unit =  dc.depth_unit, min_margin = dc.min_margin, max_margin = dc.max_margin};
 
 		unhvd=UNHVD.unhvd_init (ref net_config, hw_config, hw_config.Length, ref depth_config);
 

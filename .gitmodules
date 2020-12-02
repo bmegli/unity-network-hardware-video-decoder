@@ -1,3 +1,6 @@
 [submodule "PluginsSource/unhvd-native"]
 	path = PluginsSource/unhvd-native
 	url = https://github.com/bmegli/unhvd-native.git
+[submodule "Assets/Shaders/hardware-depth-unprojector"]
+	path = Assets/Shaders/hardware-depth-unprojector
+	url = https://github.com/bmegli/hardware-depth-unprojector.git
