@@ -1,8 +1,32 @@
-﻿#pragma kernel UnprojectKernel
+﻿/*
+ * Hardware Depth Unprojector (compute shader)
+ * 
+ * Copyright 2020 (C) Bartosz Meglicki <meglickib@gmail.com>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Compute shader for unprojecting depth map and color map to dense point cloud.
+ * The result is stored in AppendStructureBuffer.
+ *
+ * This is Unity flavour HLSL. You may recompile it with Unity for OpenGL, Vulkan etc.
+ */
 
-Texture2D<float> depthTexture;
-Texture2D<float> colorTexture;
-Texture2D<float4> unprojectionTexture;
+#pragma kernel UnprojectKernel
+
+#include "UnityCG.cginc"
+
+CBUFFER_START(UnprojectionArgs)
+    float3 UnprojectionMultiplier; //max distance * [1/fx, 1/fy, 1]
+    float PPX; //principal point x pixel coordinates (center of projection)
+    float PPY; //principal point y pixel coordinates (center of projection)
+    float MinDistance; //in [0, 1], min valid distance divided by max distance, 0 accepts any
+    float MaxDistance; //in [0, 1], max valid distance divided by max distance, 1 accepts any
+CBUFFER_END
+
+Texture2D<float> depthTexture; //sampled as red channel, in [0, 1] where 1 corresponds to max distance
+Texture2D<float> colorTexture; //color corresponding to depth sample
 
 struct VertexData
 {
@@ -15,32 +39,13 @@ AppendStructuredBuffer<VertexData> vertices;
 [numthreads(8,8,1)]
 void UnprojectKernel (uint3 id : SV_DispatchThreadID)
 {
-    /*
-    float ppx = 358.781f;
-    float ppy = 246.297f;
-    float fx = 470.941f;    
-    float fy = 470.762f;
-    float depth_unit = 0.0000390625 * 65472;
-    float min_margin = 0.19f;
-    float max_margin = 0.01f;
-    */
-    //float depth_unit = 0.0000390625 * 65472;
-    float min_margin = 0.19f / (0.0000390625 * 65472);
-
-    //float d = depthTexture[id.xy].r * depth_unit;
-
-    //float d = depthTexture[id.xy].r;
     float d = depthTexture.Load(id.xyz);
-
-    if(d < min_margin)
+    
+    if(d < MinDistance || d > MaxDistance)
         return;
 
-    float4 unprojection = unprojectionTexture.Load(id.xyz);
-
-    float4 p = float4(d * unprojection.xyz, 1);
-
-    //[d, d, d, 1] * [(id.x - ppx)/fx * DU, (ppy - id.y) / fy * DU, DU, 1]
-    //float4 p = { d * (id.x - ppx) / fx, - d * (id.y - ppy) / fy, d, 1 };
+    float3 unprojection = {id.x - PPX, PPY - id.y, 1};
+    float4 p = float4(d * unprojection * UnprojectionMultiplier, 1);
     float4 c = colorTexture[id.xy];
 
     VertexData v = {p, c};
