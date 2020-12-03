@@ -61,7 +61,7 @@ Works with system FFmpeg on Ubuntu 18.04 and doesn't on 16.04 (outdated FFmpeg a
 ## Building Instructions
 
 Tested on Ubuntu 18.04.\
-Requires Unity 2019.3  for [technical reasons](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/How-it-works#point-clouds).
+Requires Unity 2019.4 (LTS)
 
 ``` bash
 # update package repositories
@@ -101,8 +101,8 @@ Assuming you are using VAAPI device.
 
 |  Element         | Video                                 |  Point Clouds                           |
 |------------------|---------------------------------------|-----------------------------------------|
-| GameObject       | `Canvas` -> `CameraView` -> `RawImage` (UI) <br> `VideoQuad` (scene) | `PointCloud`                            |
-| Script           | `RawImageVideoRenderer` <br> `VideoRenderer` | `PointCloudRenderer`             |
+| GameObject       | `Canvas` -> `CameraView` -> `RawImage` (UI) <br> `VideoQuad` (scene) | `PointCloud`  <br> `GPUPointCloud`   |
+| Script           | `RawImageVideoRenderer` <br> `VideoRenderer` | `PointCloudRenderer`  <br> `GPUPointCloudRenderer`           |
 | Configuration    | `Port` (network) <br> `Device` (acceleration> <br> script code | `Port` (network) <br> `Device` (acceleration) <br> script code                        |
 | Troubleshooting  | `unhvd-frame-example`                 | `unhvd-cloud-example`                   |
 
@@ -142,9 +142,9 @@ Assuming Realsense D435 camera and 848x480.
 # for infrared rgb textured point cloud (D415/D455)
 ./realsense-nhve-depth-ir 127.0.0.1 9768 ir-rgb 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
 # for color textured point cloud, depth aligned
-./realsense-nhve-depth-color 127.0.01 9768 depth 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001f
+./realsense-nhve-depth-color 127.0.01 9768 depth 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
 # for color textured point cloud, color aligned, color intrinsics required
-./realsense-nhve-depth-color 127.0.01 9768 color 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001f
+./realsense-nhve-depth-color 127.0.01 9768 color 848 480 848 480 30 500 /dev/dri/renderD128 8000000 1000000 0.0001
 ```
 
 If you are using different Realsense device/resolution you will have to configure camera intrinsics.

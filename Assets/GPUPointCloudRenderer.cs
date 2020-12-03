@@ -71,7 +71,8 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 		//For D435 at 848x480 the MinZ is ~16.8cm, in our result unit min_margin is 0.168
 		//max_margin is arbitrarilly set
-		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
+		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f};
+		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
 
 		SetDepthConfig(dc);
 	}

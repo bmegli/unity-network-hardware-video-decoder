@@ -37,15 +37,15 @@ public class PointCloudRenderer : MonoBehaviour
 			new UNHVD.unhvd_hw_config{hardware="vaapi", codec="hevc", device=this.device, pixel_format="rgb0", width=848, height=480, profile=1}
 		};
 
-		//For depth units explanation see:
-		//https://github.com/bmegli/realsense-depth-to-vaapi-hevc10/wiki/How-it-works#depth-units
+		//For depth config explanation see:
+		//https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Point-clouds-configuration
 
 		//For MinZ formula see BKMs_Tuning_RealSense_D4xx_Cam.pdf
 		//For D435 at 848x480 the MinZ is ~16.8cm, in our result unit min_margin is 0.168
 		//max_margin is arbitrarilly set
 
-		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f };
-		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
+		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f };
+		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
 		//DepthConfig dc - new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f, min_margin = 0.168f, max_margin = 0.01f};
 
 		//sample config for depth + color, depth aligned to 848x480 color (so we use color intrinsics, not depth intrinsics)
