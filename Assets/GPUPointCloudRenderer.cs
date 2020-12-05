@@ -193,6 +193,7 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		}
 
 		material.SetPass(0);
+		material.SetMatrix("transform", transform.localToWorldMatrix);
 		material.SetBuffer("vertices", vertexBuffer);
 
 		Graphics.DrawProceduralIndirectNow(MeshTopology.Points, argsBuffer);
