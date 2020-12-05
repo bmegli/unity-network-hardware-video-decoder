@@ -79,10 +79,13 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 	void SetDepthConfig(DepthConfig dc)
 	{
+		//The depth texture values will be normalied in the shader, 16 bit to [0, 1]
 		float maxDistance = dc.depth_unit * 0xffff;
+		//Normalize also valid ranges
 		float minValidDistance = dc.min_margin / maxDistance;
+		//Our depth encoding uses P010LE format for depth texture which uses 10 MSB of 16 bits (0xffc0 is 10 "1" and 6 "0")
 		float maxValidDistance = (dc.depth_unit * 0xffc0 - dc.max_margin) / maxDistance;
-
+		//The multiplier renormalizes [0, 1] to real world units again and is part of unprojection
 		float[] unprojectionMultiplier = {maxDistance / dc.fx, maxDistance / dc.fy, maxDistance};
 
 		unprojectionShader.SetFloats("UnprojectionMultiplier", unprojectionMultiplier);
@@ -116,28 +119,10 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		bool updateNeeded = false;
 
 		if (UNHVD.unhvd_get_frame_begin(unhvd, frame) == 0)
-		{
-			if(frame[0].data[0] != IntPtr.Zero)
-			{
-				Adapt();
-				depthTexture.LoadRawTextureData (frame[0].data[0], frame[0].linesize[0] * frame[0].height);
-				depthTexture.Apply (false);
-
-				if(frame[1].data[0] != IntPtr.Zero)
-				{				
-					colorTexture.LoadRawTextureData (frame[1].data[0], frame[1].linesize[0] * frame[1].height);
-					colorTexture.Apply (false);
-				}
-
-				updateNeeded = true;
-			}
-		}
+			updateNeeded = PrepareTextures();
 
 		if (UNHVD.unhvd_get_frame_end (unhvd) != 0)
-		{
 			Debug.LogWarning ("Failed to get UNHVD frame data");
-			return;
-		}
 
 		if(!updateNeeded)
 			return;
@@ -145,6 +130,25 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		vertexBuffer.SetCounterValue(0);
 		unprojectionShader.Dispatch(0, frame[0].width/8, frame[0].height/8, 1);
 		ComputeBuffer.CopyCount(vertexBuffer, argsBuffer, 0);
+	}
+
+	private bool PrepareTextures()
+	{
+		if(frame[0].data[0] == IntPtr.Zero)
+			return false;
+
+		Adapt();
+
+		depthTexture.LoadRawTextureData (frame[0].data[0], frame[0].linesize[0] * frame[0].height);
+		depthTexture.Apply (false);
+
+		if(frame[1].data[0] == IntPtr.Zero)
+			return true; //only depth data is also ok
+
+		colorTexture.LoadRawTextureData (frame[1].data[0], frame[1].linesize[0] * frame[1].height);
+		colorTexture.Apply (false);
+
+		return true;
 	}
 
 	private void Adapt()
@@ -164,7 +168,7 @@ public class GPUPointCloudRenderer : MonoBehaviour
 			if(frame[1].data[0] != IntPtr.Zero)
 				colorTexture = new Texture2D (frame[1].width, frame[1].height, TextureFormat.BGRA32, false);
 			else
-			{
+			{	//in case only depth data is coming prepare dummy color texture
 				colorTexture = new Texture2D (frame[0].width, frame[0].height, TextureFormat.BGRA32, false);
 				uint[] data = new uint[frame[0].width * frame[0].height];
 				for(int i=0;i<data.Length;i++)
@@ -178,6 +182,9 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 	void OnRenderObject()
 	{	
+		if(vertexBuffer == null)
+			return;
+
 		if (material == null)
 		{
 			material = new Material(pointCloudShader);
