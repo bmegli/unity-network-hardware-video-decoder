@@ -127,6 +127,9 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		if(!updateNeeded)
 			return;
 
+		depthTexture.Apply (false);
+		colorTexture.Apply (false);
+
 		vertexBuffer.SetCounterValue(0);
 		unprojectionShader.Dispatch(0, frame[0].width/8, frame[0].height/8, 1);
 		ComputeBuffer.CopyCount(vertexBuffer, argsBuffer, 0);
@@ -140,13 +143,11 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		Adapt();
 
 		depthTexture.LoadRawTextureData (frame[0].data[0], frame[0].linesize[0] * frame[0].height);
-		depthTexture.Apply (false);
 
 		if(frame[1].data[0] == IntPtr.Zero)
 			return true; //only depth data is also ok
 
 		colorTexture.LoadRawTextureData (frame[1].data[0], frame[1].linesize[0] * frame[1].height);
-		colorTexture.Apply (false);
 
 		return true;
 	}
