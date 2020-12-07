@@ -74,6 +74,9 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f};
 		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
 
+		//sample config for D455 848x480 with depth units resulting in 2.5 mm precision and 2.5575 m range, MinZ at 848x480 is 350 mm, for depth, depth + ir, depth aligned color
+		//DepthConfig dc = new DepthConfig{ppx = 426.33f, ppy=239.446f, fx=422.768f, fy=422.768f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
+
 		SetDepthConfig(dc);
 	}
 
@@ -167,10 +170,10 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		if(colorTexture == null || colorTexture.width != frame[1].width || colorTexture.height != frame[1].height)
 		{
 			if(frame[1].data[0] != IntPtr.Zero)
-				colorTexture = new Texture2D (frame[1].width, frame[1].height, TextureFormat.BGRA32, false);
+				colorTexture = new Texture2D (frame[1].width, frame[1].height, TextureFormat.RGBA32, false);
 			else
 			{	//in case only depth data is coming prepare dummy color texture
-				colorTexture = new Texture2D (frame[0].width, frame[0].height, TextureFormat.BGRA32, false);
+				colorTexture = new Texture2D (frame[0].width, frame[0].height, TextureFormat.RGBA32, false);
 				uint[] data = new uint[frame[0].width * frame[0].height];
 				for(int i=0;i<data.Length;i++)
 				data[i] = 0xFFFFFFFF;
