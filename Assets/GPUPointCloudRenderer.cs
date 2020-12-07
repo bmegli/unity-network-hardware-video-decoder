@@ -31,6 +31,8 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		new UNHVD.unhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] }
 	};
 
+	private UNHVD.unhvd_pose pose = new UNHVD.unhvd_pose {};
+
 	private Texture2D depthTexture; //uint16 depth map filled with data from native side
 	private Texture2D colorTexture; //rgb0 color map filled with data from native side
 
@@ -71,8 +73,8 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 		//For D435 at 848x480 the MinZ is ~16.8cm, in our result unit min_margin is 0.168
 		//max_margin is arbitrarilly set
-		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f};
-		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
+		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f};
+		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
 
 		//sample config for D455 848x480 with depth units resulting in 2.5 mm precision and 2.5575 m range, MinZ at 848x480 is 350 mm, for depth, depth + ir, depth aligned color
 		//DepthConfig dc = new DepthConfig{ppx = 426.33f, ppy=239.446f, fx=422.768f, fy=422.768f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
@@ -121,7 +123,7 @@ public class GPUPointCloudRenderer : MonoBehaviour
 	{
 		bool updateNeeded = false;
 
-		if (UNHVD.unhvd_get_frame_begin(unhvd, frame) == 0)
+		if (UNHVD.unhvd_get_frame_pose_begin(unhvd, frame, ref pose) == 0)
 			updateNeeded = PrepareTextures();
 
 		if (UNHVD.unhvd_get_frame_end (unhvd) != 0)
@@ -129,6 +131,9 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 		if(!updateNeeded)
 			return;
+
+		transform.position = pose.position;
+		transform.rotation = pose.rotation;
 
 		depthTexture.Apply (false);
 		colorTexture.Apply (false);

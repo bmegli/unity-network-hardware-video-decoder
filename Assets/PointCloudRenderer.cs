@@ -25,6 +25,7 @@ public class PointCloudRenderer : MonoBehaviour
 	private IntPtr unhvd;
 	private UNHVD.unhvd_frame frame = new UNHVD.unhvd_frame{ data=new System.IntPtr[3], linesize=new int[3] };
 	private UNHVD.unhvd_point_cloud point_cloud = new UNHVD.unhvd_point_cloud {data = System.IntPtr.Zero, size=0, used=0};
+	private UNHVD.unhvd_pose pose = new UNHVD.unhvd_pose {};
 
 	private Mesh mesh;
 
@@ -44,7 +45,7 @@ public class PointCloudRenderer : MonoBehaviour
 		//For D435 at 848x480 the MinZ is ~16.8cm, in our result unit min_margin is 0.168
 		//max_margin is arbitrarilly set
 
-		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f };
+		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f };
 		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
 		//DepthConfig dc - new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.00003125f, min_margin = 0.168f, max_margin = 0.01f};
 
@@ -59,7 +60,7 @@ public class PointCloudRenderer : MonoBehaviour
 		//DepthConfig dc = new DepthConfig{ppx = 647.881f, ppy=368.939f, fx=906.795f, fy=906.768f, depth_unit = 0.000250f, min_margin = 0.19f, max_margin = 0.01f};
 
 		//sample config for D455 848x480 with depth units resulting in 2.5 mm precision and 2.5575 m range, MinZ at 848x480 is 350 mm, for depth, depth + ir, depth aligned color
-		//DepthConfig dc = new DepthConfig{ppx = 426.33f, ppy=239.446f, fx=422.768f, fy=422.768f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
+		DepthConfig dc = new DepthConfig{ppx = 426.33f, ppy=239.446f, fx=422.768f, fy=422.768f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
 		//as above, alignment to color, distortion model ignored
 		//DepthConfig dc = new DepthConfig{ppx = 419.278f, ppy=244.24f, fx=419.909f, fy=418.804f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
 
@@ -112,9 +113,12 @@ public class PointCloudRenderer : MonoBehaviour
 
 	void LateUpdate ()
 	{
-		if (UNHVD.unhvd_get_point_cloud_begin(unhvd, ref point_cloud) == 0)
+		if (UNHVD.unhvd_get_point_cloud_pose_begin(unhvd, ref point_cloud, ref pose) == 0)
 		{
 			PrepareMesh(point_cloud.size);
+
+			transform.position = pose.position;
+			transform.rotation = pose.rotation;
 
 			//possible optimization - only render non-zero points (point_cloud.used)
 			unsafe

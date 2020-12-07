@@ -12,6 +12,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 public class UNHVD
 {
@@ -81,6 +82,13 @@ public class UNHVD
 		public int used;
 	}
 
+	[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+	public struct unhvd_pose
+	{
+		public Vector3 position;
+		public Quaternion rotation;
+	}
+
 	/// Return Type: unhvd*
 	///net_config: unhvd_net_config*
 	///hw_config: unhvd_hw_config*
@@ -133,7 +141,7 @@ public class UNHVD
 	#else
 	[DllImport ("unhvd")]
 	#endif
-	public static extern  int unhvd_get_begin(System.IntPtr n, ref unhvd_frame frame, ref unhvd_point_cloud pc) ;
+	public static extern  int unhvd_get_begin(System.IntPtr n, ref unhvd_frame frame, ref unhvd_point_cloud pc, ref unhvd_pose pose) ;
 
 	/// Return Type: int
 	///n: unhvd *
@@ -165,6 +173,17 @@ public class UNHVD
 	public static extern int unhvd_get_frame_begin(System.IntPtr n, [In, Out]unhvd_frame[] frames);
 
 	/// Return Type: int
+	///n: void*
+	///frame: unhvd_frame*
+	///pose: unhvd_pose*
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("unhvd")]
+	#endif
+	public static extern int unhvd_get_frame_pose_begin(System.IntPtr n, [In, Out]unhvd_frame[] frames, ref unhvd_pose pose);
+
+	/// Return Type: int
 	///n: unhvd *
 	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
 	[DllImport ("__Internal")]
@@ -182,6 +201,17 @@ public class UNHVD
 	[DllImport ("unhvd")]
 	#endif
 	public static extern int unhvd_get_point_cloud_begin(System.IntPtr n, ref unhvd_point_cloud pc);
+
+	/// Return Type: int
+	///n: void*
+	///pc: unhvd_point_cloud*
+	///pose: unhvd_pose*
+	#if (UNITY_IPHONE || UNITY_WEBGL) && !UNITY_EDITOR
+	[DllImport ("__Internal")]
+	#else
+	[DllImport ("unhvd")]
+	#endif
+	public static extern int unhvd_get_point_cloud_pose_begin(System.IntPtr n, ref unhvd_point_cloud pc, ref unhvd_pose pose);
 
 	/// Return Type: int
 	///n: unhvd *
