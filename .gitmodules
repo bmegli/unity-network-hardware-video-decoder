@@ -4,3 +4,6 @@
 [submodule "Assets/Shaders/hardware-depth-unprojector"]
 	path = Assets/Shaders/hardware-depth-unprojector
 	url = https://github.com/bmegli/hardware-depth-unprojector.git
+[submodule "PluginsSource/robot-control"]
+	path = PluginsSource/robot-control
+	url = https://github.com/bmegli/robot-control.git
