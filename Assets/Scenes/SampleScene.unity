@@ -1188,6 +1188,7 @@ MonoBehaviour:
   ip: 
   port: 9768
   unprojectionShader: {fileID: 7200000, guid: ab6e61c487f87741790f1e0f63c8c9c2, type: 3}
+  aggregationShader: {fileID: 7200000, guid: 527f417499a699459ad369fe741f968a, type: 3}
   pointCloudShader: {fileID: 4800000, guid: 92c9447d6f5c0ef7591ec70801039484, type: 3}
 --- !u!4 &1869987319
 Transform:

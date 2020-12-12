@@ -1,0 +1,54 @@
+﻿/*
+ * Hardware Depth Unprojector (compute shader)
+ * 
+ * Copyright 2020 (C) Bartosz Meglicki <meglickib@gmail.com>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Compute shader for geometry aware point cloud aggregation.
+ * The result is kept in cicrular StructuredBuffer.
+ *
+ * This is Unity flavour HLSL. You may recompile it with Unity for OpenGL, Vulkan etc.
+ */
+
+#pragma kernel AggregateKernel
+
+#include "UnityCG.cginc"
+/*
+CBUFFER_START(UnprojectionArgs)
+    float3 UnprojectionMultiplier; //max distance * [1/fx, 1/fy, 1]
+    float PPX; //principal point x pixel coordinates (center of projection)
+    float PPY; //principal point y pixel coordinates (center of projection)
+    float MinDistance; //in [0, 1], min valid distance divided by max distance, 0 accepts any
+    float MaxDistance; //in [0, 1], max valid distance divided by max distance, 1 accepts any
+CBUFFER_END
+*/
+
+struct VertexData
+{
+    float4 position;
+    float4 color;
+};
+
+StructuredBuffer<VertexData> vertices;
+RWStructuredBuffer<VertexData> aggregatedVertices;
+
+[numthreads(1,1,1)]
+void AggregateKernel (uint3 id : SV_DispatchThreadID)
+{
+    VertexData vin = vertices[id.x];
+
+	float z_move_m = 0.50 / 30.0;
+	float sqrt3 = sqrt(3);
+	float baseline_m = 0.095;
+
+    if( (vin.position.z < vin.position.x + z_move_m) || 
+        (vin.position.z < baseline_m - vin.position.x + z_move_m ) || 
+        (vin.position.z < abs(vin.position.y) * sqrt3 + z_move_m) )
+    {
+        uint i = (aggregatedVertices.IncrementCounter()-1) % (848*480);
+        aggregatedVertices[i] = vin;
+    }
+}

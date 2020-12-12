@@ -21,6 +21,7 @@ public class GPUPointCloudRenderer : MonoBehaviour
 	public ushort port = 9768;
 
 	public ComputeShader unprojectionShader;
+	public ComputeShader aggregationShader;
 	public Shader pointCloudShader;
 
 	private IntPtr unhvd;
@@ -37,7 +38,10 @@ public class GPUPointCloudRenderer : MonoBehaviour
 	private Texture2D colorTexture; //rgb0 color map filled with data from native side
 
 	private ComputeBuffer vertexBuffer;
-	private ComputeBuffer argsBuffer;
+	private ComputeBuffer pointCloudShaderArgsBuffer;
+
+	private ComputeBuffer aggregationBuffer;
+	private ComputeBuffer aggregationShaderArgsBuffer;
 	
 	private Material material;
 
@@ -63,10 +67,15 @@ public class GPUPointCloudRenderer : MonoBehaviour
 			return;
 		}
 
-		argsBuffer = new ComputeBuffer( 4, sizeof( int ), ComputeBufferType.IndirectArguments );
+		pointCloudShaderArgsBuffer = new ComputeBuffer( 4, sizeof( int ), ComputeBufferType.IndirectArguments );
 		//vertex count per instance, instance count, start vertex location, start instance location
 		//see https://docs.unity3d.com/2019.4/Documentation/ScriptReference/Graphics.DrawProceduralIndirectNow.html
-		argsBuffer.SetData( new int[] { 0, 1, 0, 0 } );
+		pointCloudShaderArgsBuffer.SetData( new int[] { 0, 1, 0, 0 } );
+
+		aggregationShaderArgsBuffer = new ComputeBuffer( 3, sizeof( int ), ComputeBufferType.IndirectArguments );
+		//number of work groups in X, Y, Z dimensions
+		//see https://docs.unity3d.com/560/Documentation/ScriptReference/ComputeShader.DispatchIndirect.html
+		aggregationShaderArgsBuffer.SetData(new int[] {1, 1, 1}) ;
 
 		//For depth config explanation see:
 		//https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Point-clouds-configuration
@@ -74,10 +83,10 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		//For D435 at 848x480 the MinZ is ~16.8cm, in our result unit min_margin is 0.168
 		//max_margin is arbitrarilly set
 		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0001f, min_margin = 0.168f, max_margin = 0.01f};
-		//DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
+		DepthConfig dc = new DepthConfig {ppx = 421.353f, ppy=240.93f, fx=426.768f, fy=426.768f, depth_unit = 0.0000390625f, min_margin = 0.168f, max_margin = 0.01f};
 
 		//sample config for D455 848x480 with depth units resulting in 2.5 mm precision and 2.5575 m range, MinZ at 848x480 is 350 mm, for depth, depth + ir, depth aligned color
-		DepthConfig dc = new DepthConfig{ppx = 426.33f, ppy=239.446f, fx=422.768f, fy=422.768f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
+		//DepthConfig dc = new DepthConfig{ppx = 426.33f, ppy=239.446f, fx=422.768f, fy=422.768f, depth_unit = 0.0000390625f, min_margin = 0.35f, max_margin = 0.01f};
 
 		SetDepthConfig(dc);
 	}
@@ -107,8 +116,14 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		if(vertexBuffer != null)
 			vertexBuffer.Release();
 
-		if(argsBuffer != null)
-			argsBuffer.Release();
+		if(pointCloudShaderArgsBuffer != null)
+			pointCloudShaderArgsBuffer.Release();
+
+		if(aggregationBuffer != null)
+			aggregationBuffer.Release();
+
+		if(aggregationShaderArgsBuffer != null)
+			aggregationShaderArgsBuffer.Release();
 
 		if (material != null)
 		{
@@ -140,7 +155,14 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 		vertexBuffer.SetCounterValue(0);
 		unprojectionShader.Dispatch(0, frame[0].width/8, frame[0].height/8, 1);
-		ComputeBuffer.CopyCount(vertexBuffer, argsBuffer, 0);
+		ComputeBuffer.CopyCount(vertexBuffer, pointCloudShaderArgsBuffer, 0);
+
+		ComputeBuffer.CopyCount(vertexBuffer, aggregationShaderArgsBuffer, 0);
+
+		aggregationShader.DispatchIndirect(0, aggregationShaderArgsBuffer, 0);
+
+		//temp render only counter
+		ComputeBuffer.CopyCount(aggregationBuffer, pointCloudShaderArgsBuffer, 0);
 	}
 
 	private bool PrepareTextures()
@@ -170,6 +192,10 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 			vertexBuffer = new ComputeBuffer(frame[0].width*frame[0].height, 2 * sizeof(float)*4, ComputeBufferType.Append);
 			unprojectionShader.SetBuffer(0, "vertices", vertexBuffer);
+			aggregationShader.SetBuffer(0, "vertices", vertexBuffer);
+
+			aggregationBuffer = new ComputeBuffer(frame[0].width*frame[0].height, 2 * sizeof(float)*4, ComputeBufferType.Counter);
+			aggregationShader.SetBuffer(0, "aggregatedVertices", aggregationBuffer);
 		}
 
 		if(colorTexture == null || colorTexture.width != frame[1].width || colorTexture.height != frame[1].height)
@@ -202,8 +228,9 @@ public class GPUPointCloudRenderer : MonoBehaviour
 
 		material.SetPass(0);
 		material.SetMatrix("transform", transform.localToWorldMatrix);
-		material.SetBuffer("vertices", vertexBuffer);
-
-		Graphics.DrawProceduralIndirectNow(MeshTopology.Points, argsBuffer);
+		//material.SetBuffer("vertices", vertexBuffer);
+		//Graphics.DrawProceduralIndirectNow(MeshTopology.Points, pointCloudShaderArgsBuffer);
+		material.SetBuffer("vertices", aggregationBuffer);
+		Graphics.DrawProceduralNow(MeshTopology.Points, 848*480, 1);
 	}
 }
