@@ -24,7 +24,6 @@ public class GPUPointCloudRenderer : MonoBehaviour
 	public Shader pointCloudShader;
 
 	private PointCloudAggregator aggregator;
-	Vector3 lastPosition = new Vector3(0,0,0);
 
 	private IntPtr unhvd;
 
@@ -142,7 +141,8 @@ public class GPUPointCloudRenderer : MonoBehaviour
 			return;
 
 		//aggregation related
-		float displacement = Vector3.Distance(lastPosition, pose.position) * 1.5f;
+		float displacement = Vector3.Distance(transform.position, pose.position) * 1.5f;
+
 		if(displacement != 0.0f && aggregator != null)
 			aggregator.UpdateMap(vertexBuffer, transform.localToWorldMatrix, displacement); //should be displacement in Z
 		//aggregation related end
@@ -156,8 +156,6 @@ public class GPUPointCloudRenderer : MonoBehaviour
 		vertexBuffer.SetCounterValue(0);
 		unprojectionShader.Dispatch(0, frame[0].width/8, frame[0].height/8, 1);
 		ComputeBuffer.CopyCount(vertexBuffer, pointCloudShaderArgsBuffer, 0);
-
-		lastPosition = transform.position;
 	}
 
 	private bool PrepareTextures()
