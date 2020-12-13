@@ -18,6 +18,7 @@
 #include "UnityCG.cginc"
 
 CBUFFER_START(UnprojectionArgs)
+    int Points; //aggretatedVertices buffer size (Metal does not support GetDimensions queries on buffer)
     float BaselineM; //stereovision baseline, e.g. 0.095 for Realsense D455
     float ZMoveM; //Z axis displacement in metres
 CBUFFER_END
@@ -45,9 +46,8 @@ void AggregateKernel (uint3 id : SV_DispatchThreadID)
         (vin.position.z < BaselineM - vin.position.x + ZMoveM ) || 
         (vin.position.z < abs(vin.position.y) * 1.732050808 + ZMoveM) )
     {
-        uint i = (aggregatedVertices.IncrementCounter()-1) % (2000000);
+        uint i = aggregatedVertices.IncrementCounter() % Points;
         vin.position =  mul(transform, vin.position);
-        vin.color = float4(1, 0, 0, 1);
         aggregatedVertices[i] = vin;
     }
 }

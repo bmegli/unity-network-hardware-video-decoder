@@ -141,7 +141,7 @@ public class GPUPointCloudRenderer : MonoBehaviour
 			return;
 
 		//aggregation related
-		float displacement = Vector3.Distance(transform.position, pose.position) * 1.5f;
+		float displacement = Vector3.Distance(transform.position, pose.position) * 1.2f;
 
 		if(displacement != 0.0f && aggregator != null)
 			aggregator.UpdateMap(vertexBuffer, transform.localToWorldMatrix, displacement); //should be displacement in Z

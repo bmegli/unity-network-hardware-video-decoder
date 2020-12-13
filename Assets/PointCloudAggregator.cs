@@ -19,11 +19,11 @@ public class PointCloudAggregator : MonoBehaviour
 	public ComputeShader aggregationShader;
 	public Shader pointCloudShader;
 
-    public int points = 2000000;
+    public int points = 1000000;
 
 	private ComputeBuffer aggregationBuffer;
 	private ComputeBuffer aggregationShaderArgsBuffer;
-	
+
 	private Material material;
 
 	void Awake()
@@ -33,9 +33,11 @@ public class PointCloudAggregator : MonoBehaviour
 		//see https://docs.unity3d.com/560/Documentation/ScriptReference/ComputeShader.DispatchIndirect.html
 		aggregationShaderArgsBuffer.SetData(new int[] {1, 1, 1}) ;
 
+		aggregationShader.SetInt("Points", points);
+		aggregationShader.SetFloat("BaselineM", 0.095f);
+
 		aggregationBuffer = new ComputeBuffer(points, 2 * sizeof(float)*4, ComputeBufferType.Counter);
 		aggregationShader.SetBuffer(0, "aggregatedVertices", aggregationBuffer);
-        aggregationShader.SetFloat("BaselineM", 0.095f);
 	}
 
 	void OnDestroy()

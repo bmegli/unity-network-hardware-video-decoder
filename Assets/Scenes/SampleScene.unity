@@ -939,7 +939,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aggregationShader: {fileID: 7200000, guid: 527f417499a699459ad369fe741f968a, type: 3}
   pointCloudShader: {fileID: 4800000, guid: 92c9447d6f5c0ef7591ec70801039484, type: 3}
-  points: 500000
+  points: 2000000
 --- !u!4 &799851029
 Transform:
   m_ObjectHideFlags: 0
