@@ -52,6 +52,8 @@ Intel VAAPI HEVC Main10 compatible hardware decoders, at least Intel Apollo Lake
 
 [Other technologies](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Hardware) may also work but were not tested.
 
+[GPUPointCloudRenderer](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/How-it-works#gpupointcloudrenderer) has additional [requirements](https://github.com/bmegli/hardware-depth-unprojector#platforms) related to compute shaders.
+
 ## Dependencies
 
 All dependencies apart from FFmpeg are included as submodules, [more info](https://github.com/bmegli/unity-network-hardware-video-decoder/wiki/Dependencies).
