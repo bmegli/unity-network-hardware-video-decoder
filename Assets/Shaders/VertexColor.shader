@@ -30,7 +30,7 @@ Shader "Custom/VertexColor" {
             VertexOutput o;
             o.pos = UnityObjectToClipPos(v.v);
             o.col = float4(v.color.r, v.color.g, v.color.b  , 1.0f);
-            o.size = 0.25 / o.pos.w;
+            o.size = 1.0; //disable size computation for now
             return o;
         }
          
@@ -42,3 +42,4 @@ Shader "Custom/VertexColor" {
         } 
     }
 }
+
