@@ -16,9 +16,9 @@ See [hardware-video-streaming](https://github.com/bmegli/hardware-video-streamin
 
 See videos to understand point cloud streaming features:
 
-| Point Cloud Streaming | Infrared Textured Point Cloud Streaming |
-|-----------------------|-----------------------------------------|
-| [![Hardware Accelerated Point Cloud Streaming](http://img.youtube.com/vi/qnTxhfNW-_4/0.jpg)](http://www.youtube.com/watch?v=qnTxhfNW-_4) | [![Hardware Accelerated Infrared Textured Point Cloud Streaming](http://img.youtube.com/vi/zVIuvWMz5mU/0.jpg)](https://www.youtube.com/watch?v=zVIuvWMz5mU) |
+| Point Cloud Streaming | Infrared Point Cloud Streaming          | Point Cloud Streaming To UMPC  |
+|-----------------------|-----------------------------------------|--------------------------------|
+| [![Hardware Accelerated Point Cloud Streaming](http://img.youtube.com/vi/qnTxhfNW-_4/0.jpg)](http://www.youtube.com/watch?v=qnTxhfNW-_4) | [![Hardware Accelerated Infrared Textured Point Cloud Streaming](http://img.youtube.com/vi/zVIuvWMz5mU/0.jpg)](https://www.youtube.com/watch?v=zVIuvWMz5mU) | [![Realsense Wireless Point Cloud Streaming To UMPC](http://img.youtube.com/vi/952VkYPeW3M/0.jpg)](https://www.youtube.com/watch?v=952VkYPeW3M) |
 
 ## Video sources
 
